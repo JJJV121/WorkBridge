@@ -5,231 +5,208 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>WorkBridge — Freelancer Dashboard</title>
 
+  <!-- Tailwind + Icons + Charts -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/global.css">
-  <link rel="stylesheet" href="css/freelancer-dashboard.css">
-  <script defer src="js/global.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body class="bg-gray-50">
 
-  <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-40">
-    <div class="container flex items-center justify-between h-16">
-      <div class="flex items-center gap-4">
-        <button class="md:hidden p-2" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
-        <div class="flex items-center gap-2">
-          <i class="fas fa-briefcase text-indigo-600 text-2xl"></i>
-          <span class="font-bold">WorkBridge</span>
-        </div>
-      </div>
+<!-- ================= HEADER ================= -->
+<header class="bg-white shadow-sm sticky top-0 z-40">
+  <div class="px-6 h-16 flex items-center justify-between">
 
-      <div class="hidden md:block w-1/2">
-        <div class="relative">
-          <input placeholder="Search jobs..." class="w-full pl-10 pr-4 py-2 border rounded-lg" />
-          <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-        </div>
-      </div>
+    <div class="flex items-center gap-3">
+      <button class="md:hidden" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+      <i class="fas fa-briefcase text-indigo-600 text-xl"></i>
+      <span class="font-bold">WorkBridge</span>
+    </div>
 
-      <div class="flex items-center gap-4">
-        <button onclick="document.getElementById('notifications-panel').classList.toggle('hidden')" class="relative">
-          <i class="fas fa-bell"></i>
-          <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+    <div class="hidden md:block w-1/2">
+      <input class="w-full px-4 py-2 border rounded" placeholder="Search jobs...">
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button onclick="toggleNotifications()" class="relative">
+        <i class="fas fa-bell"></i>
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs h-5 w-5 flex items-center justify-center rounded-full">3</span>
+      </button>
+
+      <div class="relative">
+        <button onclick="toggleProfile()" class="flex items-center gap-2">
+          <img src="https://picsum.photos/40" class="rounded-full">
+          <span class="hidden md:block">John Doe</span>
         </button>
 
-        <div class="relative">
-          <button onclick="toggleDropdown('profile-menu')" class="flex items-center gap-2">
-            <img src="https://picsum.photos/seed/freelancer1/40/40.jpg" class="rounded-full w-8 h-8" />
-            <span class="hidden md:block">John Doe</span>
-          </button>
-          <div id="profile-menu" class="hidden absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg py-1 z-50">
-            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Profile</a>
-            <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Settings</a>
-            <hr/>
-            <a href="index.html" class="block px-4 py-2 text-sm hover:bg-gray-100">Logout</a>
-          </div>
+        <div id="profile-menu" class="hidden absolute right-0 mt-2 bg-white shadow rounded w-40">
+          <a onclick="showTab('profile')" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+          <a onclick="showTab('settings')" class="block px-4 py-2 hover:bg-gray-100">Settings</a>
+          <hr>
+          <a href="index.html" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
         </div>
-
-        <button onclick="toggleDarkMode()" class="p-2"><i class="fas fa-moon"></i></button>
-      </div>
-    </div>
-  </header>
-
-  <div class="flex">
-    <!-- Sidebar -->
-    <aside class="sidebar fixed md:relative inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform -translate-x-full md:translate-x-0 transition-transform">
-      <div class="p-4">
-        <nav class="space-y-2">
-          <button onclick="showTab('overview')" class="w-full text-left px-4 py-3 rounded-lg bg-indigo-50 text-indigo-700">Overview</button>
-          <button onclick="showTab('jobs')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">Find Jobs</button>
-          <button onclick="showTab('proposals')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">My Proposals</button>
-          <button onclick="showTab('contracts')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">Active Contracts</button>
-          <button onclick="showTab('earnings')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">Earnings</button>
-          <button onclick="showTab('messages')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">Messages</button>
-          <button onclick="showTab('profile')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">Profile</button>
-          <button onclick="showTab('settings')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100">Settings</button>
-        </nav>
-      </div>
-    </aside>
-
-    <!-- Main content -->
-    <main class="flex-1 p-6 md:pl-72">
-      <!-- Tabs -->
-      <section id="overview" class="tab-content">
-        <h1 class="text-2xl font-bold mb-6">Dashboard Overview</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="bg-white p-6 rounded-lg card">
-            <p class="text-sm text-gray-600">Applied Jobs</p>
-            <p class="text-2xl font-bold">24</p>
-          </div>
-          <div class="bg-white p-6 rounded-lg card">
-            <p class="text-sm text-gray-600">Active Contracts</p>
-            <p class="text-2xl font-bold">3</p>
-          </div>
-          <div class="bg-white p-6 rounded-lg card">
-            <p class="text-sm text-gray-600">Total Earnings</p>
-            <p class="text-2xl font-bold">$12,450</p>
-          </div>
-          <div class="bg-white p-6 rounded-lg card">
-            <p class="text-sm text-gray-600">Success Rate</p>
-            <p class="text-2xl font-bold">92%</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-white p-6 rounded-lg card">
-            <h2 class="font-semibold mb-4">Recent Proposals</h2>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center p-3 border rounded">
-                <div><p class="font-medium">React Developer Needed</p><p class="text-xs text-gray-500">TechCorp Inc • 2 hours ago</p></div>
-                <span class="px-2 py-1 rounded text-yellow-800 bg-yellow-100 text-xs">Pending</span>
-              </div>
-              <div class="flex justify-between items-center p-3 border rounded">
-                <div><p class="font-medium">UI/UX Design Project</p><p class="text-xs text-gray-500">Design Studio • 1 day ago</p></div>
-                <span class="px-2 py-1 rounded text-green-800 bg-green-100 text-xs">Accepted</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white p-6 rounded-lg card">
-            <h2 class="font-semibold mb-4">Recommended Jobs</h2>
-            <div class="space-y-3">
-              <div class="p-3 border rounded hover:shadow-md cursor-pointer"><p class="font-medium">Senior Frontend Developer</p><p class="text-xs text-gray-500">$80-120/hr • StartupXYZ</p></div>
-              <div class="p-3 border rounded hover:shadow-md cursor-pointer"><p class="font-medium">WordPress Developer</p><p class="text-xs text-gray-500">$50-70/hr • WebDev Co.</p></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Find Jobs -->
-      <section id="jobs" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">Find Jobs</h1>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-white p-4 rounded-lg card">
-            <h3 class="font-semibold">React Developer</h3>
-            <p class="text-sm text-gray-500">TechCorp • Remote</p>
-            <div class="mt-3 flex justify-between items-center">
-              <span class="text-indigo-600 font-medium">$60/hr</span>
-              <button onclick="openModal('job-modal')" class="px-3 py-1 rounded bg-indigo-600 text-white">View</button>
-            </div>
-          </div>
-          <div class="bg-white p-4 rounded-lg card">
-            <h3 class="font-semibold">UI/UX Designer</h3>
-            <p class="text-sm text-gray-500">Design Studio • Remote</p>
-            <div class="mt-3 flex justify-between items-center">
-              <span class="text-indigo-600 font-medium">$40/hr</span>
-              <button onclick="openModal('job-modal')" class="px-3 py-1 rounded bg-indigo-600 text-white">View</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- other tabs (proposals, contracts, earnings, messages, profile, settings) - simplified placeholders -->
-      <section id="proposals" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">My Proposals</h1>
-        <div class="bg-white p-6 rounded-lg card">No proposals yet (demo).</div>
-      </section>
-
-      <section id="contracts" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">Active Contracts</h1>
-        <div class="bg-white p-6 rounded-lg card">No active contracts (demo).</div>
-      </section>
-
-      <section id="earnings" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">Earnings</h1>
-        <div class="bg-white p-6 rounded-lg card">Total earnings shown here (demo).</div>
-      </section>
-
-      <section id="messages" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">Messages</h1>
-        <div class="bg-white p-6 rounded-lg card">
-          <p>Messaging is demo-only.</p>
-        </div>
-      </section>
-
-      <section id="profile" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">Profile</h1>
-        <div class="bg-white p-6 rounded-lg card">
-          <label class="block text-sm text-gray-700">Full name</label>
-          <input class="mt-1 px-3 py-2 border rounded w-full" value="John Doe" />
-        </div>
-      </section>
-
-      <section id="settings" class="tab-content hidden">
-        <h1 class="text-2xl font-bold mb-6">Settings</h1>
-        <div class="bg-white p-6 rounded-lg card">
-          <p>Email: john@example.com</p>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <!-- Notifications modal/panel -->
-  <div id="notifications-panel" class="hidden fixed inset-0 z-50 flex items-start justify-end p-6">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-4">
-      <div class="flex justify-between items-center mb-3">
-        <h3 class="font-semibold">Notifications</h3>
-        <button onclick="document.getElementById('notifications-panel').classList.add('hidden')"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="divide-y">
-        <div class="py-3">New job match found: React Developer</div>
-        <div class="py-3">Proposal accepted for UI/UX project</div>
       </div>
     </div>
   </div>
+</header>
 
-  <!-- Job Modal -->
-  <div id="job-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6">
-    <div class="bg-white max-w-2xl w-full rounded-lg p-6 card">
-      <div class="flex justify-between items-start">
-        <div>
-          <h3 class="text-lg font-semibold">React Developer</h3>
-          <p class="text-sm text-gray-500">TechCorp • Remote</p>
-        </div>
-        <button onclick="closeModal('job-modal')"><i class="fas fa-times"></i></button>
+<div class="flex">
+
+<!-- ================= SIDEBAR ================= -->
+<aside id="sidebar" class="fixed md:relative w-64 bg-white shadow h-screen transform -translate-x-full md:translate-x-0 transition">
+  <nav class="p-4 space-y-2 text-sm">
+    <button onclick="showTab('overview')" class="w-full text-left px-4 py-3 rounded bg-indigo-50 text-indigo-700">Overview</button>
+    <button onclick="showTab('jobs')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">Find Jobs</button>
+    <button onclick="showTab('proposals')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">My Proposals</button>
+    <button onclick="showTab('contracts')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">Active Contracts</button>
+    <button onclick="showTab('earnings')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">Earnings</button>
+    <button onclick="showTab('messages')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">Messages</button>
+    <button onclick="showTab('profile')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">Profile</button>
+    <button onclick="showTab('settings')" class="w-full text-left px-4 py-3 rounded hover:bg-gray-100">Settings</button>
+  </nav>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="flex-1 p-6 md:ml-64">
+
+<!-- ================= OVERVIEW ================= -->
+<section id="overview" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Dashboard Overview</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-5 rounded shadow"><p class="text-sm">Applied Jobs</p><p class="text-3xl font-bold">24</p></div>
+    <div class="bg-white p-5 rounded shadow"><p class="text-sm">Active Contracts</p><p class="text-3xl font-bold">3</p></div>
+    <div class="bg-white p-5 rounded shadow"><p class="text-sm">Total Earnings</p><p class="text-3xl font-bold">$12,450</p></div>
+    <div class="bg-white p-5 rounded shadow"><p class="text-sm">Success Rate</p><p class="text-3xl font-bold">92%</p></div>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow">
+    <h2 class="font-semibold mb-4">Weekly Earnings</h2>
+    <canvas id="earningsChart" height="120"></canvas>
+  </div>
+</section>
+
+<!-- ================= FIND JOBS ================= -->
+<section id="jobs" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">Find Jobs</h1>
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold">React Developer</h3>
+      <p class="text-sm text-gray-500">Remote • TechCorp</p>
+      <div class="mt-3 flex justify-between">
+        <span class="text-indigo-600">$60/hr</span>
+        <button class="bg-indigo-600 text-white px-3 py-1 rounded">Apply</button>
       </div>
-      <p class="mt-4 text-gray-700">Job description demo...</p>
-      <div class="mt-6 flex justify-between items-center">
-        <span class="font-semibold text-indigo-600">$60/hr</span>
-        <button onclick="alert('Apply demo');" class="px-4 py-2 rounded bg-indigo-600 text-white">Apply</button>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+      <h3 class="font-semibold">UI/UX Designer</h3>
+      <p class="text-sm text-gray-500">Remote • Design Studio</p>
+      <div class="mt-3 flex justify-between">
+        <span class="text-indigo-600">$40/hr</span>
+        <button class="bg-indigo-600 text-white px-3 py-1 rounded">Apply</button>
       </div>
     </div>
   </div>
+</section>
 
-  <script>
-    // simple tab switching
-    function showTab(id){
-      document.querySelectorAll('.tab-content').forEach(s=> s.classList.add('hidden'));
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('hidden');
-    }
+<!-- ================= PROPOSALS ================= -->
+<section id="proposals" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">My Proposals</h1>
 
-    // init default
-    document.addEventListener('DOMContentLoaded', function(){
-      showTab('overview');
-    });
+  <div class="bg-white rounded shadow divide-y">
+    <div class="p-4 flex justify-between">
+      <div><b>Frontend Developer</b><p class="text-sm">Pending</p></div>
+      <span class="text-yellow-600">Waiting</span>
+    </div>
+    <div class="p-4 flex justify-between">
+      <div><b>UI/UX Designer</b><p class="text-sm">Accepted</p></div>
+      <span class="text-green-600">Hired</span>
+    </div>
+  </div>
+</section>
 
-    // small helpers already in global.js: openModal/closeModal/toggleSidebar/toggleDropdown
-  </script>
+<!-- ================= CONTRACTS ================= -->
+<section id="contracts" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">Active Contracts</h1>
+
+  <div class="bg-white p-5 rounded shadow">
+    <p><b>React App Development</b></p>
+    <p class="text-sm text-gray-500">Client: TechCorp</p>
+    <p class="mt-2 text-indigo-600">$3,200 / $5,000</p>
+    <progress class="w-full mt-2" value="64" max="100"></progress>
+  </div>
+</section>
+
+<!-- ================= EARNINGS ================= -->
+<section id="earnings" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">Earnings</h1>
+
+  <div class="bg-white p-6 rounded shadow">
+    <p>This Month: <b>$2,450</b></p>
+    <p>Total Withdrawn: <b>$10,000</b></p>
+    <button class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded">Withdraw</button>
+  </div>
+</section>
+
+<!-- ================= MESSAGES ================= -->
+<section id="messages" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">Messages</h1>
+
+  <div class="bg-white p-6 rounded shadow">
+    <p><b>Client:</b> Can you start this week?</p>
+    <input class="w-full border px-4 py-2 rounded mt-3" placeholder="Reply...">
+  </div>
+</section>
+
+<!-- ================= PROFILE ================= -->
+<section id="profile" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">Profile</h1>
+
+  <div class="bg-white p-6 rounded shadow space-y-3">
+    <input class="w-full border px-4 py-2 rounded" value="John Doe">
+    <input class="w-full border px-4 py-2 rounded" value="john@example.com">
+    <input class="w-full border px-4 py-2 rounded" value="React, JavaScript">
+    <button class="bg-indigo-600 text-white px-6 py-2 rounded">Save</button>
+  </div>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section id="settings" class="tab hidden">
+  <h1 class="text-2xl font-bold mb-6">Settings</h1>
+
+  <div class="bg-white p-6 rounded shadow">
+    <input class="w-full border px-4 py-2 rounded mb-3" placeholder="Change Email">
+    <input type="password" class="w-full border px-4 py-2 rounded mb-3" placeholder="New Password">
+    <button class="bg-indigo-600 text-white px-6 py-2 rounded">Update</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
+  document.getElementById(tab).classList.remove('hidden');
+}
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('-translate-x-full'); }
+function toggleProfile(){ document.getElementById('profile-menu').classList.toggle('hidden'); }
+function toggleNotifications(){ alert("Notifications panel demo"); }
+
+showTab('overview');
+
+new Chart(document.getElementById("earningsChart"),{
+  type:"bar",
+  data:{
+    labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+    datasets:[{data:[120,200,180,260,300,220,350]}]
+  },
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+});
+</script>
+
 </body>
 </html>

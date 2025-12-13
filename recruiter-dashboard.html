@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recruiter Dashboard — WorkBridge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind + Icons + Charts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .sidebar { transform: translateX(-100%); transition: 0.25s; }
+    .sidebar.active { transform: translateX(0); }
+    @media (min-width:768px){ .sidebar{transform:translateX(0);} }
+
+    .tab { display:none; }
+    .tab.active { display:block; }
+
+    .dropdown { display:none; position:absolute; }
+    .dropdown.active { display:block; }
+  </style>
+</head>
+
+<body class="bg-gray-50">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="px-6 h-16 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <button onclick="toggleSidebar()" class="md:hidden">
+        <i class="fas fa-bars"></i>
+      </button>
+      <i class="fas fa-briefcase text-indigo-600 text-2xl"></i>
+      <span class="font-bold text-xl">WorkBridge</span>
+    </div>
+
+    <div class="relative">
+      <button onclick="toggleProfile()" class="flex items-center space-x-2">
+        <img src="https://picsum.photos/40" class="rounded-full">
+        <span class="hidden md:block font-medium">Recruiter</span>
+        <i class="fas fa-chevron-down text-sm"></i>
+      </button>
+
+      <div id="profile-menu" class="dropdown right-0 mt-2 bg-white shadow rounded w-40">
+        <a onclick="showTab('company')" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Company</a>
+        <a onclick="showTab('settings')" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Settings</a>
+        <hr>
+        <a onclick="logout()" class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Logout</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="flex">
+
+<!-- ================= SIDEBAR ================= -->
+<aside id="sidebar" class="sidebar fixed md:relative w-64 bg-white shadow h-screen">
+  <nav class="p-4 space-y-2 text-sm">
+    <a onclick="showTab('overview')" class="block px-4 py-3 rounded bg-indigo-50 text-indigo-700">
+      <i class="fas fa-home mr-2"></i> Overview
+    </a>
+    <a onclick="showTab('postjob')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-plus mr-2"></i> Post Job
+    </a>
+    <a onclick="showTab('jobs')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-briefcase mr-2"></i> Manage Jobs
+    </a>
+    <a onclick="showTab('applicants')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-users mr-2"></i> Applicants
+    </a>
+    <a onclick="showTab('messages')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-envelope mr-2"></i> Messages
+    </a>
+    <a onclick="showTab('billing')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-credit-card mr-2"></i> Billing
+    </a>
+    <a onclick="showTab('company')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-building mr-2"></i> Company Profile
+    </a>
+    <a onclick="showTab('settings')" class="block px-4 py-3 rounded hover:bg-gray-100">
+      <i class="fas fa-cog mr-2"></i> Settings
+    </a>
+  </nav>
+</aside>
+
+<!-- ================= MAIN ================= -->
+<main class="flex-1 p-6 md:ml-64">
+
+<!-- ================= OVERVIEW (UNCHANGED) ================= -->
+<section id="overview" class="tab active">
+  <h1 class="text-2xl font-bold mb-6">Dashboard Overview</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+    <div class="bg-white p-4 rounded shadow"><p class="text-sm">Active Jobs</p><p class="text-3xl font-bold">12</p></div>
+    <div class="bg-white p-4 rounded shadow"><p class="text-sm">Applicants</p><p class="text-3xl font-bold">86</p></div>
+    <div class="bg-white p-4 rounded shadow"><p class="text-sm">Shortlisted</p><p class="text-3xl font-bold">14</p></div>
+    <div class="bg-white p-4 rounded shadow"><p class="text-sm">Interviews</p><p class="text-3xl font-bold">9</p></div>
+    <div class="bg-white p-4 rounded shadow"><p class="text-sm">Hires</p><p class="text-3xl font-bold">6</p></div>
+    <div class="bg-white p-4 rounded shadow"><p class="text-sm">Avg Time</p><p class="text-3xl font-bold">9d</p></div>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow mb-6">
+    <canvas id="applicationsChart" height="120"></canvas>
+  </div>
+</section>
+
+<!-- ================= POST JOB ================= -->
+<section id="postjob" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Post a New Job</h1>
+  <div class="bg-white p-6 rounded shadow grid md:grid-cols-2 gap-6">
+    <input class="border px-4 py-2 rounded" placeholder="Job Title">
+    <select class="border px-4 py-2 rounded">
+      <option>Development</option><option>Design</option><option>Marketing</option>
+    </select>
+    <textarea class="md:col-span-2 border px-4 py-2 rounded" rows="4" placeholder="Job Description"></textarea>
+    <input class="border px-4 py-2 rounded" placeholder="Budget">
+    <select class="border px-4 py-2 rounded"><option>Remote</option><option>Hybrid</option></select>
+    <input class="md:col-span-2 border px-4 py-2 rounded" placeholder="Required Skills">
+    <button class="md:col-span-2 bg-indigo-600 text-white py-3 rounded">Publish Job</button>
+  </div>
+</section>
+
+<!-- ================= MANAGE JOBS ================= -->
+<section id="jobs" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Manage Jobs</h1>
+  <div class="bg-white rounded shadow divide-y">
+    <div class="p-4 flex justify-between">
+      <div><b>Frontend Developer</b><p class="text-sm">Active</p></div>
+      <div class="space-x-2"><button>Edit</button><button class="text-red-600">Close</button></div>
+    </div>
+    <div class="p-4 flex justify-between">
+      <div><b>UI/UX Designer</b><p class="text-sm">Paused</p></div>
+      <div class="space-x-2"><button>Resume</button><button class="text-red-600">Delete</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= APPLICANTS ================= -->
+<section id="applicants" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Applicants</h1>
+  <table class="w-full bg-white shadow rounded text-sm">
+    <thead class="bg-gray-100">
+      <tr><th class="p-3">Name</th><th>Job</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr class="border-t">
+        <td class="p-3">Sarah Johnson</td><td>Frontend</td><td>Applied</td>
+        <td><button class="bg-green-600 text-white px-3 py-1 rounded">Shortlist</button></td>
+      </tr>
+      <tr class="border-t">
+        <td class="p-3">Mike Chen</td><td>Designer</td><td>Interview</td>
+        <td><button class="bg-red-600 text-white px-3 py-1 rounded">Reject</button></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= MESSAGES ================= -->
+<section id="messages" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Messages</h1>
+  <div class="bg-white p-6 rounded shadow space-y-3">
+    <p><b>Sarah:</b> Is the role still open?</p>
+    <p><b>You:</b> Yes, we are reviewing profiles.</p>
+    <input class="w-full border px-4 py-2 rounded" placeholder="Type a message...">
+  </div>
+</section>
+
+<!-- ================= BILLING ================= -->
+<section id="billing" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Billing</h1>
+  <div class="bg-white p-6 rounded shadow">
+    <p>Current Plan: <b>Pro</b></p>
+    <p>Next Billing: 12 Oct 2025</p>
+    <button class="mt-4 bg-indigo-600 text-white px-6 py-2 rounded">Upgrade Plan</button>
+  </div>
+</section>
+
+<!-- ================= COMPANY PROFILE ================= -->
+<section id="company" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Company Profile</h1>
+  <div class="bg-white p-6 rounded shadow">
+    <input class="w-full border px-4 py-2 rounded mb-3" value="TechCorp Inc.">
+    <textarea class="w-full border px-4 py-2 rounded mb-3">About company...</textarea>
+    <button class="bg-indigo-600 text-white px-6 py-2 rounded">Save</button>
+  </div>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section id="settings" class="tab">
+  <h1 class="text-2xl font-bold mb-6">Settings</h1>
+  <div class="bg-white p-6 rounded shadow">
+    <input class="w-full border px-4 py-2 rounded mb-3" placeholder="Email">
+    <input type="password" class="w-full border px-4 py-2 rounded mb-3" placeholder="New Password">
+    <button class="bg-indigo-600 text-white px-6 py-2 rounded">Update</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function showTab(tab){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(tab).classList.add("active");
+}
+function toggleSidebar(){ sidebar.classList.toggle("active"); }
+function toggleProfile(){ document.getElementById("profile-menu").classList.toggle("active"); }
+function logout(){ window.location.href="index.html"; }
+
+new Chart(document.getElementById("applicationsChart"),{
+  type:"line",
+  data:{labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],datasets:[{data:[4,7,6,10,12,9,14],borderWidth:2}]},
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+});
+</script>
+
+</body>
+</html>
