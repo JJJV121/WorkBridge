@@ -1,0 +1,12 @@
+/* landing-specific */
+.hero{
+  background: linear-gradient(135deg,#4F46E5 0%, #7C3AED 50%, #EC4899 100%);
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.hero h1{ font-size: clamp(2rem, 4vw, 3.5rem); }
+.hero p{ font-size: 1.125rem; }
+
+.card { transition: transform .2s ease, box-shadow .2s ease; }
+.card:hover{ transform: translateY(-6px); box-shadow: 0 12px 36px rgba(16,24,40,0.12); }

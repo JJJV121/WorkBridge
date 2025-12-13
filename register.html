@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WorkBridge — Register</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/register.css">
+  <script defer src="js/global.js"></script>
+</head>
+<body class="bg-gray-50">
+
+  <main class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-white p-8 rounded-xl card">
+      <div class="text-center mb-6">
+        <i class="fas fa-briefcase text-indigo-600 text-3xl"></i>
+        <h1 class="text-2xl font-bold mt-2">Create your account</h1>
+        <p id="role-indicator" class="text-sm text-gray-500 mt-1">Registering as Freelancer</p>
+      </div>
+
+      <form id="register-form" onsubmit="handleRegister(event)">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input id="firstName" type="text" required placeholder="First name" class="px-3 py-2 border rounded">
+          <input id="lastName" type="text" required placeholder="Last name" class="px-3 py-2 border rounded">
+        </div>
+
+        <input id="regEmail" type="email" required placeholder="Email address" class="mt-4 px-3 py-2 border rounded w-full">
+        <input id="regPw" type="password" required placeholder="Password" class="mt-4 px-3 py-2 border rounded w-full">
+
+        <div id="role-specific-fields" class="mt-4">
+          <!-- injected inputs -->
+          <input id="reg-skills" placeholder="Skills (comma separated)" class="w-full px-3 py-2 border rounded" />
+          <input id="reg-rate" placeholder="Hourly Rate" class="w-full px-3 py-2 border rounded mt-3" />
+        </div>
+
+        <button type="submit" class="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold mt-4">Create Account</button>
+
+        <p class="text-sm text-center text-gray-500 mt-4">Already have an account? <a href="login.html" class="text-indigo-600">Sign in</a></p>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // preselect role if arrived from auth-selection with ?role= recruiter/freelancer
+    (function(){
+      const params = new URLSearchParams(window.location.search);
+      const role = params.get('role') || 'freelancer';
+      const indicator = document.getElementById('role-indicator');
+      const container = document.getElementById('role-specific-fields');
+      indicator.textContent = role === 'freelancer' ? 'Registering as Freelancer' : 'Registering as Recruiter';
+      if (role === 'recruiter'){
+        container.innerHTML = '<input id="reg-company" placeholder="Company Name" class="w-full px-3 py-2 border rounded" /><input id="reg-website" placeholder="Website" class="w-full px-3 py-2 border rounded mt-3" />';
+      } else {
+        container.innerHTML = '<input id="reg-skills" placeholder="Skills (comma separated)" class="w-full px-3 py-2 border rounded" /><input id="reg-rate" placeholder="Hourly Rate" class="w-full px-3 py-2 border rounded mt-3" />';
+      }
+    })();
+
+    function handleRegister(e){
+      e.preventDefault();
+      // demo: after registration redirect to freelancer dashboard
+      const email = document.getElementById('regEmail').value || '';
+      if (email.includes('recruiter')) window.location = 'recruiter-dashboard.html';
+      else window.location = 'freelancer-dashboard.html';
+    }
+  </script>
+</body>
+</html>

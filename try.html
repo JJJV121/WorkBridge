@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WorkBridge - Freelancer & Recruiter Platform</title>
+
+  <!-- Tailwind, Icons, Charts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+        --primary: #4F46E5;
+        --primary-dark: #4338CA;
+        --secondary: #10B981;
+        --accent: #F59E0B;
+        --danger: #EF4444;
+        --dark: #1F2937;
+        --light: #F9FAFB;
+        --transition: all 0.3s ease;
+    }
+
+    * { transition: var(--transition); box-sizing: border-box; }
+
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; margin:0; background:#f7fafc; color:#111827; }
+
+    .dark { background-color: #0b1220; color: #e5e7eb; }
+    .dark .bg-white { background-color: #111827 !important; }
+    .dark a { color: #c7d2fe; }
+
+    .animate-fade-in { animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity:1; transform: translateY(0);} }
+
+    .skeleton { background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size:200% 100%; animation:loading 1.5s infinite; }
+    @keyframes loading { 0%{background-position:200% 0;}100%{background-position:-200% 0;} }
+
+    .notification-badge { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.08);}100%{transform:scale(1);} }
+
+    .page { display: none; }
+    .page.active { display: block; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .modal { display: none; position:fixed; inset:0; align-items:center; justify-content:center; z-index:50; }
+    .modal.active { display:flex; }
+
+    .dropdown { display:none; position:absolute; }
+    .dropdown.active { display:block; }
+
+    .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; }
+    .sidebar.active { transform: translateX(0); }
+    @media (min-width:768px) { .sidebar { transform: translateX(0); } }
+  </style>
+</head>
+
+<body class="bg-gray-50">
+
+<!-- ======================= LANDING PAGE ======================= -->
+<div id="landing-page" class="page active">
+
+  <!-- ================= HEADER (NEW) ================= -->
+  <header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-briefcase text-indigo-600 text-2xl"></i>
+        <span class="text-2xl font-bold text-gray-900">WorkBridge</span>
+      </div>
+      <nav class="hidden md:flex space-x-8">
+        <a class="text-gray-700 hover:text-indigo-600 cursor-pointer">Home</a>
+        <a class="text-gray-700 hover:text-indigo-600 cursor-pointer">Browse Jobs</a>
+        <a class="text-gray-700 hover:text-indigo-600 cursor-pointer">Find Talent</a>
+        <a class="text-gray-700 hover:text-indigo-600 cursor-pointer">Pricing</a>
+      </nav>
+      <div class="flex items-center space-x-4">
+        <button onclick="showPage('auth-selection')" class="text-gray-700 hover:text-indigo-600">Login</button>
+        <button onclick="showPage('auth-selection')" class="bg-indigo-600 text-white px-5 py-2 rounded-xl shadow hover:bg-indigo-700">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= HERO SECTION (NEW) ================= -->
+  <section class="relative overflow-hidden text-white py-28 px-6 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
+    
+    <div class="absolute inset-0 opacity-20 pointer-events-none">
+      <div class="absolute w-[850px] h-[850px] bg-white rounded-full blur-[170px] -top-20 -left-20"></div>
+      <div class="absolute w-[900px] h-[900px] bg-white rounded-full blur-[200px] -bottom-28 -right-20"></div>
+    </div>
+
+    <div class="relative max-w-6xl mx-auto text-center">
+      <h1 class="text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg">
+        Find Talent. <span class="text-yellow-300">Find Work.</span>
+        <br> All in One Platform.
+      </h1>
+
+      <p class="mt-6 text-xl md:text-2xl max-w-3xl mx-auto text-gray-100 leading-relaxed">
+        WorkBridge connects skilled freelancers with top companies worldwide. Fast. Secure. Hassle-free.
+      </p>
+
+      <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+        <button onclick="showPage('auth-selection'); setAuthRole('freelancer')"
+          class="px-10 py-4 bg-white text-indigo-700 text-lg font-semibold rounded-xl shadow-xl hover:scale-105 transition">
+          I’m a Freelancer
+        </button>
+        <button onclick="showPage('auth-selection'); setAuthRole('recruiter')"
+          class="px-10 py-4 bg-indigo-900/40 border border-white text-white text-lg font-semibold rounded-xl shadow-xl hover:scale-105 transition">
+          I’m a Recruiter
+        </button>
+      </div>
+
+      <!-- STATS -->
+      <div class="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 text-white">
+        <div class="p-6 bg-white/20 backdrop-blur-xl rounded-xl shadow border border-white/30">
+          <h2 class="text-4xl font-bold">85K+</h2>
+          <p class="mt-2">Active Freelancers</p>
+        </div>
+        <div class="p-6 bg-white/20 backdrop-blur-xl rounded-xl shadow border border-white/30">
+          <h2 class="text-4xl font-bold">14K+</h2>
+          <p class="mt-2">Companies Hiring</p>
+        </div>
+        <div class="p-6 bg-white/20 backdrop-blur-xl rounded-xl shadow border border-white/30">
+          <h2 class="text-4xl font-bold">60K+</h2>
+          <p class="mt-2">Monthly Jobs</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= SEARCH BAR (NEW) ================= -->
+  <section class="py-16 bg-white px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center bg-white shadow-xl rounded-full px-6 py-4 border border-gray-200">
+        <i class="fas fa-search text-gray-400 text-xl mr-3"></i>
+        <input type="text" placeholder="Search for jobs, roles or companies..."
+          class="flex-1 text-lg focus:outline-none">
+        <button class="px-6 py-3 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">
+          Search
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CATEGORIES (NEW) ================= -->
+  <section class="py-20 px-6">
+    <div class="max-w-6xl mx-auto text-center">
+      <h2 class="text-4xl font-extrabold text-gray-900">Popular Categories</h2>
+      <p class="mt-2 text-gray-600">Browse jobs by top professional categories</p>
+
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="p-6 bg-white rounded-xl shadow hover:shadow-2xl transition cursor-pointer border border-gray-100">
+          <i class="fas fa-laptop-code text-3xl text-indigo-600 mb-3"></i>
+          <p class="text-lg font-semibold">Web Development</p>
+        </div>
+        <div class="p-6 bg-white rounded-xl shadow hover:shadow-2xl transition cursor-pointer border border-gray-100">
+          <i class="fas fa-palette text-3xl text-purple-600 mb-3"></i>
+          <p class="text-lg font-semibold">UI/UX Design</p>
+        </div>
+        <div class="p-6 bg-white rounded-xl shadow hover:shadow-2xl transition cursor-pointer border border-gray-100">
+          <i class="fas fa-bullhorn text-3xl text-pink-600 mb-3"></i>
+          <p class="text-lg font-semibold">Marketing</p>
+        </div>
+        <div class="p-6 bg-white rounded-xl shadow hover:shadow-2xl transition cursor-pointer border border-gray-100">
+          <i class="fas fa-pen-nib text-3xl text-green-600 mb-3"></i>
+          <p class="text-lg font-semibold">Writing</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TESTIMONIALS (NEW) ================= -->
+  <section class="py-20 bg-gradient-to-br from-indigo-600 to-purple-600 px-6">
+    <div class="max-w-6xl mx-auto text-center text-white">
+      <h2 class="text-4xl font-extrabold">What People Say</h2>
+
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white/20 backdrop-blur-xl p-6 rounded-xl shadow border border-white/30">
+          <i class="fas fa-star text-yellow-300 text-3xl mb-3"></i>
+          <p class="italic">"I found my best-paying project ever through WorkBridge!"</p>
+          <p class="mt-4 font-semibold">— Sarah, Freelancer</p>
+        </div>
+
+        <div class="bg-white/20 backdrop-blur-xl p-6 rounded-xl shadow border border-white/30">
+          <i class="fas fa-star text-yellow-300 text-3xl mb-3"></i>
+          <p class="italic">"Hiring qualified talent has never been this easy."</p>
+          <p class="mt-4 font-semibold">— Mark, Recruiter</p>
+        </div>
+
+        <div class="bg-white/20 backdrop-blur-xl p-6 rounded-xl shadow border border-white/30">
+          <i class="fas fa-star text-yellow-300 text-3xl mb-3"></i>
+          <p class="italic">"The platform is clean, fast and incredibly effective."</p>
+          <p class="mt-4 font-semibold">— Priya, Writer</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= CTA (NEW) ================= -->
+  <section class="py-24 px-6 bg-gray-50">
+    <div class="max-w-4xl mx-auto text-center bg-white shadow-2xl rounded-3xl p-16 border border-gray-100">
+      <h2 class="text-4xl font-bold text-gray-900">Get Started With WorkBridge</h2>
+      <p class="mt-3 text-gray-600 text-lg">
+        Whether you're here to find work or hire talent — we’ve got you covered.
+      </p>
+
+      <button onclick="showPage('auth-selection')"
+        class="mt-8 bg-indigo-600 text-white px-12 py-4 rounded-xl text-xl hover:bg-indigo-700 hover:scale-105 transition">
+        Join Now
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER (NEW) ================= -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center space-x-2 mb-4">
+            <i class="fas fa-briefcase text-indigo-400 text-2xl"></i>
+            <span class="text-2xl font-bold">WorkBridge</span>
+          </div>
+          <p class="text-gray-400">A modern platform connecting freelancers and companies worldwide.</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">For Freelancers</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>Browse Jobs</li>
+            <li>Success Stories</li>
+            <li>Resources</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">For Recruiters</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>Post a Job</li>
+            <li>Find Talent</li>
+            <li>Pricing</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Company</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>About Us</li>
+            <li>Contact</li>
+            <li>Privacy Policy</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        © 2024 WorkBridge. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+</div>
+<!-- END LANDING PAGE -->
+<!-- ======================= AUTH SELECTION PAGE ======================= -->
+<div id="auth-selection" class="page">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <div class="flex items-center justify-center space-x-2 mb-6">
+          <i class="fas fa-briefcase text-indigo-600 text-3xl"></i>
+          <span class="text-3xl font-bold text-gray-900">WorkBridge</span>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Join as a Freelancer or Recruiter</h2>
+      </div>
+      <div class="mt-8 space-y-6">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <button onclick="showAuthForm('freelancer')" class="group relative w-full flex justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none mb-4">
+            <i class="fas fa-user-tie mr-2"></i> Continue as Freelancer
+          </button>
+          <button onclick="showAuthForm('recruiter')" class="group relative w-full flex justify-center py-3 px-4 text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none">
+            <i class="fas fa-building mr-2"></i> Continue as Recruiter
+          </button>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-600">Already have an account?
+            <button onclick="showAuthForm('login')" class="font-medium text-indigo-600 hover:text-indigo-500"> Sign in</button>
+          </p>
+        </div>
+        <div class="text-center">
+          <button onclick="showPage('landing-page')" class="text-sm text-gray-500 hover:text-gray-700"><i class="fas fa-arrow-left mr-1"></i> Back to Home</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= LOGIN PAGE ======================= -->
+<div id="login-form" class="page">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <div class="flex items-center justify-center space-x-2 mb-6">
+          <i class="fas fa-briefcase text-indigo-600 text-3xl"></i>
+          <span class="text-3xl font-bold text-gray-900">WorkBridge</span>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+      </div>
+      <form class="mt-8 space-y-6" onsubmit="handleLogin(event)">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <input id="email-address" name="email" type="email" required class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-t-md" placeholder="Email address">
+          </div>
+          <div>
+            <input id="password" name="password" type="password" required class="appearance-none w-full px-3 py-2 border border-gray-300 rounded-b-md" placeholder="Password">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded">
+            <label for="remember-me" class="ml-2 text-sm text-gray-900">Remember me</label>
+          </div>
+          <button type="button" onclick="showPage('forgot-password')" class="font-medium text-indigo-600">Forgot your password?</button>
+        </div>
+
+        <button type="submit" class="w-full flex justify-center py-2 px-4 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md">
+          Sign in
+        </button>
+
+        <div class="text-center">
+          <p class="text-sm text-gray-600">Don't have an account?
+            <button onclick="showPage('auth-selection')" class="font-medium text-indigo-600"> Sign up</button>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= REGISTRATION PAGE ======================= -->
+<div id="registration-form" class="page">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <div class="flex items-center justify-center space-x-2 mb-6">
+          <i class="fas fa-briefcase text-indigo-600 text-3xl"></i>
+          <span class="text-3xl font-bold text-gray-900">WorkBridge</span>
+        </div>
+        <h2 class="text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
+        <p id="role-indicator" class="mt-2 text-center text-sm text-gray-600"></p>
+      </div>
+
+      <form class="mt-8 space-y-6" onsubmit="handleRegistration(event)">
+        <div class="space-y-4">
+          <div class="flex space-x-4">
+            <input id="first-name" name="firstName" type="text" required placeholder="First Name" class="w-full px-3 py-2 border rounded">
+            <input id="last-name" name="lastName" type="text" required placeholder="Last Name" class="w-full px-3 py-2 border rounded">
+          </div>
+
+          <input id="reg-email" name="email" type="email" required placeholder="Email Address" class="w-full px-3 py-2 border rounded">
+
+          <input id="reg-password" name="password" type="password" required placeholder="Password" class="w-full px-3 py-2 border rounded">
+
+          <div id="role-specific-fields"></div>
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md">Create Account</button>
+
+        <div class="text-center">
+          <p class="text-sm text-gray-600">Already have an account?
+            <button onclick="showAuthForm('login')" class="font-medium text-indigo-600"> Sign in</button>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= FORGOT PASSWORD ======================= -->
+<div id="forgot-password" class="page">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 bg-gray-50">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <div class="flex items-center justify-center space-x-2 mb-6">
+          <i class="fas fa-briefcase text-indigo-600 text-3xl"></i>
+          <span class="text-3xl font-bold text-gray-900">WorkBridge</span>
+        </div>
+        <h2 class="text-center text-3xl font-extrabold text-gray-900">Reset your password</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">Enter your email to receive reset link.</p>
+      </div>
+
+      <form class="mt-8 space-y-6" onsubmit="handleForgotPassword(event)">
+        <input id="reset-email" name="email" type="email" required placeholder="Email Address" class="w-full px-3 py-2 border rounded">
+
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md">Send Reset Link</button>
+
+        <div class="text-center">
+          <button onclick="showAuthForm('login')" class="text-sm text-indigo-600">
+            <i class="fas fa-arrow-left mr-1"></i> Back to Sign in
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= FREELANCER DASHBOARD ======================= -->
+<div id="freelancer-dashboard" class="page">
+
+  <!-- FREELANCER HEADER -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <button onclick="toggleSidebar()" class="md:hidden mr-4 text-gray-600">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-briefcase text-indigo-600 text-2xl"></i>
+            <span class="text-xl font-bold text-gray-900">WorkBridge</span>
+          </div>
+        </div>
+
+        <div class="hidden md:flex flex-1 max-w-lg mx-8">
+          <div class="relative w-full">
+            <input id="global-search" type="text" placeholder="Search jobs..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <button onclick="toggleNotifications()" class="relative text-gray-600 hover:text-gray-900">
+            <i class="fas fa-bell text-xl"></i>
+            <span id="notif-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+          </button>
+
+          <div class="relative">
+            <button onclick="toggleProfileDropdown('freelancer')" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+              <img src="https://picsum.photos/seed/freelancer1/40/40.jpg" class="w-8 h-8 rounded-full">
+              <span class="hidden md:block">John Doe</span>
+              <i class="fas fa-chevron-down text-sm"></i>
+            </button>
+
+            <div id="profile-dropdown-freelancer" class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+              <a onclick="showFreelancerTab('profile')" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Profile</a>
+              <a onclick="showFreelancerTab('settings')" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Settings</a>
+              <hr class="my-1">
+              <a onclick="logout()" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Logout</a>
+            </div>
+          </div>
+
+          <button onclick="toggleDarkMode()" class="text-gray-600 hover:text-gray-900">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <div class="flex">
+    <aside id="freelancer-sidebar" class="sidebar fixed md:relative inset-y-0 left-0 z-40 w-64 bg-white shadow-lg">
+      <div class="h-full py-6 px-4">
+        <nav class="space-y-2">
+
+          <a onclick="showFreelancerTab('overview')" class="block px-4 py-3 rounded-lg bg-indigo-50 text-indigo-700">
+            <i class="fas fa-home mr-2"></i> Overview
+          </a>
+
+          <a onclick="showFreelancerTab('jobs')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-briefcase mr-2"></i> Find Jobs
+          </a>
+
+          <a onclick="showFreelancerTab('proposals')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-file-alt mr-2"></i> My Proposals
+          </a>
+
+          <a onclick="showFreelancerTab('contracts')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-handshake mr-2"></i> Active Contracts
+          </a>
+
+          <a onclick="showFreelancerTab('earnings')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-dollar-sign mr-2"></i> Earnings
+          </a>
+
+          <a onclick="showFreelancerTab('messages')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-envelope mr-2"></i> Messages
+          </a>
+
+          <a onclick="showFreelancerTab('profile')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-user mr-2"></i> Profile
+          </a>
+
+          <a onclick="showFreelancerTab('settings')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-cog mr-2"></i> Settings
+          </a>
+
+        </nav>
+      </div>
+    </aside>
+
+
+    <!-- MAIN AREA -->
+    <main class="flex-1 p-6">
+
+      <!-- ================= OVERVIEW TAB ================= -->
+      <div id="freelancer-overview" class="tab-content active">
+
+        <h1 class="text-2xl font-bold mb-6">Dashboard Overview</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-sm text-gray-600">Applied Jobs</p>
+            <p class="text-2xl font-bold text-gray-900">24</p>
+          </div>
+
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-sm text-gray-600">Active Contracts</p>
+            <p class="text-2xl font-bold text-gray-900">3</p>
+          </div>
+
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-sm text-gray-600">Total Earnings</p>
+            <p class="text-2xl font-bold text-gray-900">$12,450</p>
+          </div>
+
+          <div class="bg-white rounded-lg shadow p-6">
+            <p class="text-sm text-gray-600">Success Rate</p>
+            <p class="text-2xl font-bold text-gray-900">92%</p>
+          </div>
+        </div>
+
+        <!-- Recent proposals -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold mb-4">Recent Proposals</h2>
+
+            <div class="flex items-center justify-between p-3 border rounded-lg mb-4">
+              <div>
+                <p class="font-medium">React Developer Needed</p>
+                <p class="text-sm text-gray-600">TechCorp Inc. • 2 hours ago</p>
+              </div>
+              <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Pending</span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 border rounded-lg mb-4">
+              <div>
+                <p class="font-medium">UI/UX Design Project</p>
+                <p class="text-sm text-gray-600">Design Studio • 1 day ago</p>
+              </div>
+              <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Accepted</span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 border rounded-lg">
+              <div>
+                <p class="font-medium">Content Writing</p>
+                <p class="text-sm text-gray-600">Media Agency • 3 days ago</p>
+              </div>
+              <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Rejected</span>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold mb-4">Recommended Jobs</h2>
+
+            <div class="p-3 border rounded-lg hover:shadow-md cursor-pointer mb-3">
+              <p class="font-medium">Senior Frontend Developer</p>
+              <p class="text-sm text-gray-600">StartupXYZ • Remote</p>
+              <p class="text-indigo-600 font-medium">$80-120/hr</p>
+            </div>
+
+            <div class="p-3 border rounded-lg hover:shadow-md cursor-pointer mb-3">
+              <p class="font-medium">WordPress Developer</p>
+              <p class="text-sm text-gray-600">WebDev Co. • Remote</p>
+              <p class="text-indigo-600 font-medium">$50-70/hr</p>
+            </div>
+
+            <div class="p-3 border rounded-lg hover:shadow-md cursor-pointer">
+              <p class="font-medium">Full Stack Engineer</p>
+              <p class="text-sm text-gray-600">Tech Solutions • Hybrid</p>
+              <p class="text-indigo-600 font-medium">$90-130/hr</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= END OVERVIEW TAB ================= -->
+      
+      <!-- 🔥 The rest of the freelancer dashboard (Jobs, Proposals, Contracts, Earnings, Messages, Profile, Settings) stays EXACTLY as in your file and continues in Part 3 -->
+
+    </main>
+  </div>
+</div>
+<!-- ======================= RECRUITER DASHBOARD ======================= -->
+<div id="recruiter-dashboard" class="page">
+
+  <!-- RECRUITER HEADER -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <button onclick="toggleSidebar()" class="md:hidden mr-4 text-gray-600">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-briefcase text-indigo-600 text-2xl"></i>
+            <span class="text-xl font-bold text-gray-900">WorkBridge</span>
+          </div>
+        </div>
+
+        <div class="hidden md:flex flex-1 max-w-lg mx-8">
+          <div class="relative w-full">
+            <input type="text" placeholder="Search talent..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <button onclick="toggleNotifications()" class="relative text-gray-600 hover:text-gray-900">
+            <i class="fas fa-bell text-xl"></i>
+            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">4</span>
+          </button>
+
+          <div class="relative">
+            <button onclick="toggleProfileDropdown('recruiter')" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+              <img src="https://picsum.photos/seed/recruiter1/40/40.jpg" class="w-8 h-8 rounded-full">
+              <span class="hidden md:block">Recruiter</span>
+              <i class="fas fa-chevron-down text-sm"></i>
+            </button>
+
+            <div id="profile-dropdown-recruiter" class="dropdown absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+              <a onclick="showRecruiterTab('company')" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Company Profile</a>
+              <a onclick="showRecruiterTab('settings')" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Settings</a>
+              <hr class="my-1">
+              <a onclick="logout()" class="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer">Logout</a>
+            </div>
+          </div>
+
+          <button onclick="toggleDarkMode()" class="text-gray-600 hover:text-gray-900">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- RECRUITER SIDEBAR -->
+  <div class="flex">
+    <aside id="recruiter-sidebar" class="sidebar fixed md:relative inset-y-0 left-0 z-40 w-64 bg-white shadow-lg">
+      <div class="h-full py-6 px-4">
+        <nav class="space-y-2">
+
+          <a onclick="showRecruiterTab('overview')" class="block px-4 py-3 rounded-lg bg-indigo-50 text-indigo-700">
+            <i class="fas fa-home mr-2"></i> Overview
+          </a>
+
+          <a onclick="showRecruiterTab('postjob')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-folder-plus mr-2"></i> Post a Job
+          </a>
+
+          <a onclick="showRecruiterTab('jobs')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-briefcase mr-2"></i> Manage Jobs
+          </a>
+
+          <a onclick="showRecruiterTab('applicants')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-users mr-2"></i> Applicants
+          </a>
+
+          <a onclick="showRecruiterTab('company')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-building mr-2"></i> Company Profile
+          </a>
+
+          <a onclick="showRecruiterTab('settings')" class="block px-4 py-3 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <i class="fas fa-cog mr-2"></i> Settings
+          </a>
+
+        </nav>
+      </div>
+    </aside>
+
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main class="flex-1 p-6">
+
+      <!-- ============= RECRUITER OVERVIEW TAB ============= -->
+      <div id="recruiter-overview" class="tab-content active">
+
+        <h1 class="text-2xl font-bold mb-6">Recruiter Dashboard</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+          <div class="bg-white shadow rounded-lg p-6">
+            <p class="text-sm text-gray-600">Active Job Posts</p>
+            <p class="text-3xl font-bold">12</p>
+          </div>
+
+          <div class="bg-white shadow rounded-lg p-6">
+            <p class="text-sm text-gray-600">Applications Received</p>
+            <p class="text-3xl font-bold">86</p>
+          </div>
+
+          <div class="bg-white shadow rounded-lg p-6">
+            <p class="text-sm text-gray-600">Shortlisted Candidates</p>
+            <p class="text-3xl font-bold">14</p>
+          </div>
+
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+          <h2 class="text-xl font-semibold mb-4">Recent Applicants</h2>
+
+          <div class="flex items-center justify-between p-3 border rounded-lg mb-4">
+            <div>
+              <p class="font-medium">Sarah Johnson</p>
+              <p class="text-sm text-gray-600">React Developer • Applied 2h ago</p>
+            </div>
+            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded">Shortlisted</span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 border rounded-lg mb-4">
+            <div>
+              <p class="font-medium">Mike Chen</p>
+              <p class="text-sm text-gray-600">UI/UX Designer • Applied 1d ago</p>
+            </div>
+            <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded">Pending</span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 border rounded-lg">
+            <div>
+              <p class="font-medium">Emily Davis</p>
+              <p class="text-sm text-gray-600">Writer • Applied 3d ago</p>
+            </div>
+            <span class="bg-red-100 text-red-800 text-xs px-3 py-1 rounded">Rejected</span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ============= POST A JOB TAB ============= -->
+      <div id="recruiter-postjob" class="tab-content">
+
+        <h1 class="text-2xl font-bold mb-6">Post a Job</h1>
+
+        <div class="bg-white shadow rounded-lg p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+              <label class="font-medium">Job Title</label>
+              <input type="text" class="w-full mt-2 px-4 py-2 border rounded">
+            </div>
+
+            <div>
+              <label class="font-medium">Category</label>
+              <select class="w-full mt-2 px-4 py-2 border rounded">
+                <option>Development</option>
+                <option>Design</option>
+                <option>Marketing</option>
+                <option>Writing</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-2">
+              <label class="font-medium">Job Description</label>
+              <textarea rows="4" class="w-full mt-2 px-4 py-2 border rounded"></textarea>
+            </div>
+
+            <div>
+              <label class="font-medium">Budget</label>
+              <input type="text" class="w-full mt-2 px-4 py-2 border rounded">
+            </div>
+
+            <div>
+              <label class="font-medium">Job Type</label>
+              <select class="w-full mt-2 px-4 py-2 border rounded">
+                <option>Remote</option>
+                <option>On-site</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+
+          </div>
+
+          <button class="mt-8 bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700">
+            Post Job
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ============= MANAGE JOBS TAB ============= -->
+      <div id="recruiter-jobs" class="tab-content">
+        <h1 class="text-2xl font-bold mb-6">Manage Jobs</h1>
+
+        <div class="space-y-4">
+
+          <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex justify-between">
+              <div>
+                <h3 class="font-semibold text-lg">Frontend Developer</h3>
+                <p class="text-sm text-gray-600">Posted 3 days ago</p>
+              </div>
+              <button class="text-indigo-600 hover:text-indigo-800">Edit</button>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow">
+            <div class="flex justify-between">
+              <div>
+                <h3 class="font-semibold text-lg">UI/UX Designer</h3>
+                <p class="text-sm text-gray-600">Posted 1 week ago</p>
+              </div>
+              <button class="text-indigo-600 hover:text-indigo-800">Edit</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============= APPLICANTS TAB ============= -->
+      <div id="recruiter-applicants" class="tab-content">
+        <h1 class="text-2xl font-bold mb-6">Applicants</h1>
+
+        <div class="bg-white shadow rounded-lg p-6">
+          <div class="flex items-center justify-between p-3 border rounded-lg mb-4">
+            <div>
+              <p class="font-medium">Sarah Johnson</p>
+              <p class="text-sm text-gray-600">Frontend Developer</p>
+            </div>
+            <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">View</button>
+          </div>
+
+          <div class="flex items-center justify-between p-3 border rounded-lg mb-4">
+            <div>
+              <p class="font-medium">Mike Chen</p>
+              <p class="text-sm text-gray-600">UI/UX Designer</p>
+            </div>
+            <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">View</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============= COMPANY PROFILE TAB ============= -->
+      <div id="recruiter-company" class="tab-content">
+        <h1 class="text-2xl font-bold mb-6">Company Profile</h1>
+
+        <div class="bg-white shadow rounded-lg p-6">
+          <label class="font-medium">Company Name</label>
+          <input type="text" class="w-full mt-2 px-4 py-2 border rounded" value="TechCorp Inc.">
+
+          <label class="font-medium mt-6 block">Website</label>
+          <input type="text" class="w-full mt-2 px-4 py-2 border rounded" value="https://example.com">
+
+          <label class="font-medium mt-6 block">About</label>
+          <textarea rows="4" class="w-full mt-2 px-4 py-2 border rounded">We are a tech-driven company...</textarea>
+
+          <button class="mt-6 bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700">
+            Save Changes
+          </button>
+        </div>
+      </div>
+
+      <!-- ============= SETTINGS TAB ============= -->
+      <div id="recruiter-settings" class="tab-content">
+        <h1 class="text-2xl font-bold mb-6">Settings</h1>
+
+        <div class="bg-white p-6 shadow rounded-lg">
+          <label class="font-medium">Email</label>
+          <input type="text" class="w-full px-4 py-2 border rounded mt-2" value="recruiter@example.com">
+
+          <label class="font-medium block mt-6">Password</label>
+          <input type="password" class="w-full px-4 py-2 border rounded mt-2">
+
+          <button class="mt-8 bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">
+            Save Changes
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ======================= NOTIFICATIONS PANEL ======================= -->
+<div id="notifications-panel" class="modal">
+  <div class="bg-white w-full max-w-md h-full overflow-y-auto">
+    <div class="p-6 border-b flex justify-between items-center">
+      <h2 class="text-xl font-semibold">Notifications</h2>
+      <button onclick="toggleNotifications()"><i class="fas fa-times text-xl"></i></button>
+    </div>
+
+    <div class="divide-y">
+
+      <div class="p-4 hover:bg-gray-50">
+        <div class="flex items-start space-x-3">
+          <div class="bg-indigo-100 p-2 rounded-full"><i class="fas fa-briefcase text-indigo-600"></i></div>
+          <div><p class="font-medium">New job match found</p><p class="text-sm text-gray-600">React Developer position matches your skills</p></div>
+        </div>
+      </div>
+
+      <div class="p-4 hover:bg-gray-50">
+        <div class="flex items-start space-x-3">
+          <div class="bg-green-100 p-2 rounded-full"><i class="fas fa-check text-green-600"></i></div>
+          <div><p class="font-medium">Proposal accepted</p><p class="text-sm text-gray-600">Your proposal has been accepted</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ======================= JOB DETAILS MODAL ======================= -->
+<div id="job-details-modal" class="modal">
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full mx-auto">
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 id="job-modal-title" class="text-xl font-semibold">Job Title</h3>
+        <p id="job-modal-company" class="text-sm text-gray-600">Company • Remote</p>
+      </div>
+      <button onclick="closeJobDetails()"><i class="fas fa-times text-gray-600"></i></button>
+    </div>
+
+    <p id="job-modal-desc" class="text-gray-700 mt-4">Description here...</p>
+    <div class="mt-6 flex justify-between items-center">
+      <span id="job-modal-rate" class="text-lg font-semibold text-indigo-600">$0/hr</span>
+      <button onclick="applyJob()" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= GLOBAL JAVASCRIPT ======================= -->
+<script>
+/* All script logic from your original try.html — unchanged */
+
+const state = {
+  authRole: null,
+  currentPage: "landing-page",
+  currentFreelancerTab: "overview",
+  currentRecruiterTab: "overview",
+  currentSettingsTab: "account",
+  jobs: [],
+  proposals: [],
+  contracts: [],
+  messages: [],
+  conversations: [],
+  jobsPage: 1,
+  jobsPerPage: 6
+};
+
+function $(id){ return document.getElementById(id); }
+
+/* PAGE SWITCHING */
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  $(pageId).classList.add("active");
+}
+
+/* AUTH */
+function showAuthForm(mode) {
+  if (mode === "login") return showPage("login-form");
+  state.authRole = mode;
+  showPage("registration-form");
+  const indicator = $("role-indicator");
+  indicator.textContent = mode === "freelancer" ? 
+    "Registering as Freelancer" :
+    "Registering as Recruiter";
+
+  const container = $("role-specific-fields");
+  container.innerHTML = mode === "freelancer"
+    ? `<input id="reg-skills" placeholder="Skills" class="w-full px-3 py-2 border rounded">
+       <input id="reg-rate" placeholder="Hourly Rate" class="w-full px-3 py-2 border rounded mt-4">`
+    : `<input id="reg-company" placeholder="Company Name" class="w-full px-3 py-2 border rounded">
+       <input id="reg-website" placeholder="Website" class="w-full px-3 py-2 border rounded mt-4">`;
+}
+
+function setAuthRole(role){ state.authRole = role; }
+
+/* LOGIN */
+function handleLogin(e) {
+  e.preventDefault();
+  const email = $("email-address").value;
+  if (email.includes("recruiter")) showPage("recruiter-dashboard");
+  else showPage("freelancer-dashboard");
+}
+
+/* REGISTRATION */
+function handleRegistration(e){
+  e.preventDefault();
+  if (state.authRole === "recruiter") showPage("recruiter-dashboard");
+  else showPage("freelancer-dashboard");
+}
+
+/* FORGOT PASSWORD */
+function handleForgotPassword(e){
+  e.preventDefault();
+  alert("Reset link sent!");
+  showPage("login-form");
+}
+
+/* TABS */
+function showFreelancerTab(tab){
+  state.currentFreelancerTab = tab;
+  document.querySelectorAll("#freelancer-dashboard .tab-content").forEach(el => el.classList.remove("active"));
+  $(`freelancer-${tab}`).classList.add("active");
+}
+
+function showRecruiterTab(tab){
+  state.currentRecruiterTab = tab;
+  document.querySelectorAll("#recruiter-dashboard .tab-content").forEach(el => el.classList.remove("active"));
+  $(`recruiter-${tab}`).classList.add("active");
+}
+
+/* SIDEBAR */
+function toggleSidebar(){
+  document.querySelectorAll(".sidebar").forEach(s => s.classList.toggle("active"));
+}
+
+/* PROFILE MENU */
+function toggleProfileDropdown(type){
+  document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("active"));
+  if (type === "freelancer") $("profile-dropdown-freelancer").classList.toggle("active");
+  else $("profile-dropdown-recruiter").classList.toggle("active");
+}
+
+/* DARK MODE */
+function toggleDarkMode(){ document.body.classList.toggle("dark"); }
+
+/* NOTIFICATIONS */
+function toggleNotifications(){
+  $("notifications-panel").classList.toggle("active");
+}
+
+/* LOGOUT */
+function logout(){ showPage("landing-page"); }
+
+/* JOB DETAILS */
+function showJobDetails(id){
+  $("job-details-modal").classList.add("active");
+}
+function closeJobDetails(){
+  $("job-details-modal").classList.remove("active");
+}
+function applyJob(){
+  alert("Applying (Demo)");
+}
+
+/* MESSAGES */
+function sendMessage(){
+  alert("Demo message sent");
+}
+
+</script>
+
+</body>
+</html>

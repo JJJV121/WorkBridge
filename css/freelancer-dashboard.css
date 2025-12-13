@@ -1,0 +1,7 @@
+/* Dashboard-specific styles */
+.sidebar { width: 16rem; }
+.tab-content { transition: opacity .15s ease; }
+.tab-content.hidden { display: none; }
+.tab-content:not(.hidden) { display: block; }
+
+.card { border-radius: 12px; }
