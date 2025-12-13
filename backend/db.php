@@ -2,17 +2,13 @@
 $host = 'localhost';
 $user = 'root';
 $pass = '';
-$port = 3308;        // MySQL port
-$dbname = 'aidvault'; // Database name
+$port = 3308;          // your MySQL port
+$dbname = 'workbridge'; // ✅ MUST BE workbridge
 
-// Create connection
 $conn = new mysqli($host, $user, $pass, $dbname, $port);
 
-// Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("DB CONNECTION FAILED: " . $conn->connect_error);
 }
 
-// Start session
-session_start();
-?>
+session_start(); // ONLY HERE

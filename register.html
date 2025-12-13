@@ -4,109 +4,137 @@
   <meta charset="UTF-8">
   <title>WorkBridge — Register</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
 
-  <div class="bg-white p-8 rounded-xl shadow-md max-w-md w-full">
+<div class="bg-white p-8 rounded-xl shadow-md max-w-md w-full">
 
-    <!-- STEP 1: ROLE SELECTION -->
-    <div id="step-role">
-      <h1 class="text-2xl font-bold text-center mb-2">Join WorkBridge</h1>
-      <p class="text-center text-gray-500 mb-6">Choose how you want to sign up</p>
+  <!-- STEP 1: ROLE SELECTION -->
+  <div id="step-role">
+    <h1 class="text-2xl font-bold text-center mb-2">Join WorkBridge</h1>
+    <p class="text-center text-gray-500 mb-6">Choose how you want to sign up</p>
 
-      <button onclick="selectRole('freelancer')"
-        class="w-full py-3 mb-4 bg-indigo-600 text-white rounded-lg font-semibold">
-        Sign up as Freelancer
-      </button>
+    <button onclick="selectRole('freelancer')"
+      class="w-full py-3 mb-4 bg-indigo-600 text-white rounded-lg font-semibold">
+      Sign up as Freelancer
+    </button>
 
-      <button onclick="selectRole('recruiter')"
-        class="w-full py-3 border border-indigo-600 text-indigo-600 rounded-lg font-semibold">
-        Sign up as Recruiter
-      </button>
-
-      <p class="text-sm text-center mt-6 text-gray-500">
-        Already have an account?
-        <a href="login.html" class="text-indigo-600">Login</a>
-      </p>
-    </div>
-
-    <!-- STEP 2: REGISTRATION FORM -->
-    <form id="step-form" class="hidden" onsubmit="handleRegister(event)">
-      <h2 id="form-title" class="text-xl font-bold text-center mb-1"></h2>
-      <p id="form-subtitle" class="text-center text-gray-500 mb-6"></p>
-
-      <input required placeholder="First Name" class="w-full mb-3 px-3 py-2 border rounded">
-      <input required placeholder="Last Name" class="w-full mb-3 px-3 py-2 border rounded">
-      <input required type="email" placeholder="Email" class="w-full mb-3 px-3 py-2 border rounded">
-      <input required type="password" placeholder="Password" class="w-full mb-3 px-3 py-2 border rounded">
-
-      <!-- ROLE-SPECIFIC FIELDS -->
-      <div id="role-fields"></div>
-
-      <button class="w-full py-2 bg-indigo-600 text-white rounded-lg font-semibold mt-4">
-        Create Account
-      </button>
-
-      <button type="button" onclick="goBack()"
-        class="w-full text-sm mt-3 text-gray-500 hover:text-indigo-600">
-        ← Change role
-      </button>
-    </form>
-
+    <button onclick="selectRole('recruiter')"
+      class="w-full py-3 border border-indigo-600 text-indigo-600 rounded-lg font-semibold">
+      Sign up as Recruiter
+    </button>
   </div>
 
+  <!-- STEP 2: FORM -->
+  <form id="step-form" class="hidden" onsubmit="handleRegister(event)">
+    <h2 id="form-title" class="text-xl font-bold text-center mb-1"></h2>
+    <p id="form-subtitle" class="text-center text-gray-500 mb-6"></p>
+
+    <input id="firstName" required placeholder="First Name"
+      class="w-full mb-3 px-3 py-2 border rounded">
+
+    <input id="lastName" required placeholder="Last Name"
+      class="w-full mb-3 px-3 py-2 border rounded">
+
+    <input id="email" required type="email" placeholder="Email"
+      class="w-full mb-3 px-3 py-2 border rounded">
+
+    <input id="password" required type="password" placeholder="Password"
+      class="w-full mb-3 px-3 py-2 border rounded">
+
+    <!-- ROLE-SPECIFIC -->
+    <div id="role-fields"></div>
+
+    <button class="w-full py-2 bg-indigo-600 text-white rounded-lg font-semibold mt-4">
+      Create Account
+    </button>
+
+    <button type="button" onclick="goBack()"
+      class="w-full text-sm mt-3 text-gray-500">
+      ← Change role
+    </button>
+  </form>
+
+</div>
+
 <script>
-  let selectedRole = '';
+let selectedRole = "";
 
-  function selectRole(role) {
-    selectedRole = role;
+function selectRole(role) {
+  selectedRole = role;
 
-    document.getElementById('step-role').classList.add('hidden');
-    document.getElementById('step-form').classList.remove('hidden');
+  document.getElementById("step-role").classList.add("hidden");
+  document.getElementById("step-form").classList.remove("hidden");
 
-    const title = document.getElementById('form-title');
-    const subtitle = document.getElementById('form-subtitle');
-    const fields = document.getElementById('role-fields');
+  const title = document.getElementById("form-title");
+  const subtitle = document.getElementById("form-subtitle");
+  const fields = document.getElementById("role-fields");
 
-    if (role === 'freelancer') {
-      title.textContent = 'Freelancer Registration';
-      subtitle.textContent = 'Create your freelancer profile';
-      fields.innerHTML = `
-        <input required placeholder="Skills (comma separated)"
-               class="w-full mb-3 px-3 py-2 border rounded">
-        <input required placeholder="Hourly Rate"
-               class="w-full mb-3 px-3 py-2 border rounded">
-      `;
+  if (role === "freelancer") {
+    title.textContent = "Freelancer Registration";
+    subtitle.textContent = "Create your freelancer profile";
+    fields.innerHTML = `
+      <input id="skills" required placeholder="Skills (comma separated)"
+        class="w-full mb-3 px-3 py-2 border rounded">
+      <input id="rate" required placeholder="Hourly Rate"
+        class="w-full mb-3 px-3 py-2 border rounded">
+    `;
+  } else {
+    title.textContent = "Recruiter Registration";
+    subtitle.textContent = "Hire top freelancers";
+    fields.innerHTML = `
+      <input id="company" required placeholder="Company Name"
+        class="w-full mb-3 px-3 py-2 border rounded">
+      <input id="website" placeholder="Company Website"
+        class="w-full mb-3 px-3 py-2 border rounded">
+    `;
+  }
+}
+
+function goBack() {
+  document.getElementById("step-form").classList.add("hidden");
+  document.getElementById("step-role").classList.remove("hidden");
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+
+  const fd = new FormData();
+  fd.append("name",
+    document.getElementById("firstName").value + " " +
+    document.getElementById("lastName").value
+  );
+  fd.append("email", document.getElementById("email").value);
+  fd.append("password", document.getElementById("password").value);
+  fd.append("role", selectedRole);
+
+  if (selectedRole === "freelancer") {
+    fd.append("skills", document.getElementById("skills").value);
+    fd.append("hourly_rate", document.getElementById("rate").value);
+  } else {
+    fd.append("company_name", document.getElementById("company").value);
+    fd.append("website", document.getElementById("website").value);
+  }
+
+  fetch("backend/register.php", {
+    method: "POST",
+    body: fd
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location =
+        data.role === "freelancer"
+          ? "freelancer-dashboard.html"
+          : "recruiter-dashboard.html";
     } else {
-      title.textContent = 'Recruiter Registration';
-      subtitle.textContent = 'Hire top freelancers';
-      fields.innerHTML = `
-        <input required placeholder="Company Name"
-               class="w-full mb-3 px-3 py-2 border rounded">
-        <input placeholder="Company Website"
-               class="w-full mb-3 px-3 py-2 border rounded">
-      `;
+      alert(data.error);
     }
-  }
-
-  function goBack() {
-    document.getElementById('step-form').classList.add('hidden');
-    document.getElementById('step-role').classList.remove('hidden');
-  }
-
-  function handleRegister(e) {
-    e.preventDefault();
-
-    // Later: send data + selectedRole to backend
-    if (selectedRole === 'freelancer') {
-      window.location = 'freelancer-dashboard.html';
-    } else {
-      window.location = 'recruiter-dashboard.html';
-    }
-  }
+  })
+  .catch(() => alert("Server error"));
+}
 </script>
 
 </body>
