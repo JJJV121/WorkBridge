@@ -1,38 +1,45 @@
-:root{
-  --primary: #4F46E5;
-  --primary-dark: #4338CA;
-  --accent: #F59E0B;
-  --danger: #EF4444;
-  --bg: #f7fafc;
-  --text: #111827;
-  --transition: all 0.2s ease;
+:root {
+  --ink: #0f172a;
+  --muted: #475569;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --border: #e5e7eb;
+
+  --accent: #6366f1;   /* modern indigo */
+  --accent-soft: #eef2ff;
+  --success: #22c55e;
 }
 
-/* Reset-ish helpers */
-*{ box-sizing: border-box; transition: var(--transition); }
-body{ font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:var(--bg); color:var(--text); }
-
-/* Common components */
-.container{ max-width: 1100px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem; }
-
-.btn {
-  display:inline-block;
-  padding: .6rem 1.1rem;
-  border-radius: .75rem;
-  font-weight:600;
-  text-decoration:none;
-  cursor:pointer;
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
 }
 
-/* Primary button */
-.btn-primary{ background: #fff; color: var(--primary); box-shadow: 0 6px 18px rgba(79,70,229,0.12); }
-.btn-primary:hover{ transform: translateY(-3px); }
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 1.25rem;
+}
 
-/* Small card shadow */
-.card { box-shadow: 0 8px 22px rgba(16,24,40,0.06); border-radius: 12px; }
+/* Buttons */
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
 
-/* Simple responsive helpers used by CSS files */
-.section-title { font-size: 1.5rem; font-weight: 700; color: #0f172a; text-align:center; }
+.btn-primary:hover {
+  background: #4f46e5;
+}
 
-/* Dark mode helper */
-.dark body { background: #0b1220; color: #e5e7eb; }
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+/* Subtle hover */
+.card:hover {
+  border-color: #c7d2fe;
+}

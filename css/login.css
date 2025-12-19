@@ -1,2 +1,12 @@
-/* login small */
-.card{ padding: 1.5rem; }
+@import url("register.css");
+
+.bottom-text {
+  text-align: center;
+  margin-top: 1rem;
+  color: #475569;
+}
+
+.bottom-text a {
+  color: #6366f1;
+  text-decoration: none;
+}

@@ -1,2 +1,25 @@
-/* small extras */
-.card{ padding: 1.5rem; }
+/* =========================
+   AUTH ROLE SELECTION
+========================= */
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.role-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+}
+
+.role-card h2 {
+  margin-bottom: 0.5rem;
+}
+
+.role-card p {
+  margin-bottom: 1.2rem;
+}

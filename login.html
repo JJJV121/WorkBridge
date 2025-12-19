@@ -1,57 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>WorkBridge — Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/login.css">
-  <script defer src="js/global.js"></script>
 </head>
-<body class="bg-gray-50">
 
-  <main class="min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-md w-full bg-white p-8 rounded-xl card">
-      <div class="text-center mb-6">
-        <i class="fas fa-briefcase text-indigo-600 text-3xl"></i>
-        <h1 class="text-2xl font-bold mt-2">Sign in to your account</h1>
-      </div>
+<body>
 
-      <form id="login-form" action="#" onsubmit="handleForm(event)">
-        <label class="block text-sm font-medium text-gray-700">Email</label>
-        <input id="email" type="email" required class="mt-1 mb-4 w-full px-3 py-2 border rounded" placeholder="you@example.com" />
+<div class="auth-container">
+  <form class="auth-card" onsubmit="handleLogin(event)">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Log in to your account</p>
 
-        <label class="block text-sm font-medium text-gray-700">Password</label>
-        <input id="pw" type="password" required class="mt-1 mb-4 w-full px-3 py-2 border rounded" placeholder="••••••" />
+    <input id="email" required type="email" placeholder="Email">
+    <input id="password" required type="password" placeholder="Password">
 
-        <div class="flex items-center justify-between mb-4">
-          <label class="flex items-center gap-2 text-sm">
-            <input type="checkbox" class="h-4 w-4">
-            Remember me
-          </label>
-          <a href="forgot-password.html" class="text-indigo-600 text-sm">Forgot password?</a>
-        </div>
+    <button class="primary-btn">Login</button>
 
-        <div>
-          <button type="submit" class="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold">Sign in</button>
-        </div>
+    <p class="bottom-text">
+      Don’t have an account?
+      <a href="register.html">Sign up</a>
+    </p>
+  </form>
+</div>
 
-        <p class="text-sm text-center text-gray-500 mt-4">Don't have an account? <a href="register.html" class="text-indigo-600">Sign up</a></p>
-      </form>
-    </div>
-  </main>
+<script>
+function handleLogin(e) {
+  e.preventDefault();
 
-  <script>
-    // local small login handler — purely demo to redirect to correct dashboard
-    function handleForm(e){
-      e.preventDefault();
-      const email = document.getElementById('email').value || '';
-      if (email.includes('recruiter')) window.location = 'recruiter-dashboard.html';
-      else window.location = 'freelancer-dashboard.html';
+  const fd = new FormData();
+  fd.append("email", document.getElementById("email").value);
+  fd.append("password", document.getElementById("password").value);
+
+  fetch("backend/login.php", {
+    method: "POST",
+    body: fd
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location =
+        data.role === "freelancer"
+          ? "freelancer-dashboard.html"
+          : "recruiter-dashboard.html";
+    } else {
+      alert(data.error);
     }
-  </script>
+  })
+  .catch(() => alert("Server error"));
+}
+</script>
 
 </body>
 </html>
