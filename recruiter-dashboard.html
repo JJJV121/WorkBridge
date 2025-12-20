@@ -66,11 +66,11 @@
 <h1 class="text-2xl font-bold mb-6">Overview</h1>
 
 <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
-<div class="bg-white p-4 rounded shadow">Jobs <p class="text-2xl font-bold">14</p></div>
-<div class="bg-white p-4 rounded shadow">Applicants <p class="text-2xl font-bold">128</p></div>
-<div class="bg-white p-4 rounded shadow">Shortlisted <p class="text-2xl font-bold">32</p></div>
-<div class="bg-white p-4 rounded shadow">Interviews <p class="text-2xl font-bold">11</p></div>
-<div class="bg-white p-4 rounded shadow">Hired <p class="text-2xl font-bold">7</p></div>
+<div class="bg-white p-4 rounded shadow">Jobs<p id="totalJobs" class="text-2xl font-bold">0</p></div>
+<div class="bg-white p-4 rounded shadow">Applicants<p id="totalApplicants" class="text-2xl font-bold">0</p></div>
+<div class="bg-white p-4 rounded shadow">Shortlisted<p id="totalShortlisted" class="text-2xl font-bold">0</p></div>
+<div class="bg-white p-4 rounded shadow">Interviews<p id="totalInterviews" class="text-2xl font-bold">0</p></div>
+<div class="bg-white p-4 rounded shadow">Hired<p id="totalHired" class="text-2xl font-bold">0</p></div>
 <div class="bg-white p-4 rounded shadow">Avg Hire Time <p class="text-2xl font-bold">8d</p></div>
 </div>
 
@@ -82,31 +82,71 @@
 <!-- POST JOB (EXTENDED) -->
 <section id="postjob" class="tab">
 <h1 class="text-2xl font-bold mb-6">Post a Job</h1>
+
 <div class="bg-white p-6 rounded shadow grid md:grid-cols-2 gap-4">
-<input class="border p-2 rounded" placeholder="Job Title">
-<input class="border p-2 rounded" placeholder="Required Skills (React, PHP)">
-<select class="border p-2 rounded"><option>Short Term</option><option>Long Term</option></select>
-<select class="border p-2 rounded"><option>Fresher</option><option>Experienced</option></select>
-<select class="border p-2 rounded"><option>Hourly</option><option>Fixed</option></select>
-<input class="border p-2 rounded" placeholder="Budget / Hourly Rate">
-<select class="border p-2 rounded"><option>Remote</option><option>Hybrid</option></select>
-<input type="file" class="border p-2 rounded">
-<textarea class="md:col-span-2 border p-2 rounded" rows="4" placeholder="Job Description"></textarea>
-<button class="md:col-span-2 bg-indigo-600 text-white py-3 rounded">Publish Job</button>
+  <input id="jobTitle" class="border p-2 rounded" placeholder="Job Title">
+  <input id="skills" class="border p-2 rounded" placeholder="Required Skills">
+
+  <select id="jobType" class="border p-2 rounded">
+    <option value="Short Term">Short Term</option>
+    <option value="Long Term">Long Term</option>
+  </select>
+
+  <select id="experience" class="border p-2 rounded">
+    <option>Fresher</option>
+    <option>Experienced</option>
+  </select>
+
+  <select id="paymentType" class="border p-2 rounded">
+    <option>Hourly</option>
+    <option>Fixed</option>
+  </select>
+
+  <input id="budget" class="border p-2 rounded" placeholder="Budget / Hourly Rate">
+
+  <select id="workMode" class="border p-2 rounded">
+    <option>Remote</option>
+    <option>Hybrid</option>
+  </select>
+
+  <textarea id="desc" class="md:col-span-2 border p-2 rounded"
+    placeholder="Job Description"></textarea>
+
+  <button onclick="postJob()"
+    class="md:col-span-2 bg-indigo-600 text-white py-3 rounded">
+    Publish Job
+  </button>
 </div>
 </section>
 
 <!-- HIRING PIPELINE -->
 <section id="pipeline" class="tab">
 <h1 class="text-2xl font-bold mb-6">Hiring Pipeline</h1>
+
 <div class="grid md:grid-cols-5 gap-4">
-<div class="bg-white p-4 rounded shadow"><h3 class="font-bold">Applied</h3><p>45 Candidates</p></div>
-<div class="bg-white p-4 rounded shadow"><h3 class="font-bold">Shortlisted</h3><p>18 Candidates</p></div>
-<div class="bg-white p-4 rounded shadow"><h3 class="font-bold">Interview</h3><p>11 Candidates</p></div>
-<div class="bg-white p-4 rounded shadow"><h3 class="font-bold">Offered</h3><p>5 Candidates</p></div>
-<div class="bg-white p-4 rounded shadow"><h3 class="font-bold">Hired</h3><p>7 Candidates</p></div>
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-bold">Applied</h3>
+    <p id="appliedCount">0 Candidates</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-bold">Shortlisted</h3>
+    <p id="shortlistedCount">0 Candidates</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-bold">Interview</h3>
+    <p id="interviewCount">0 Candidates</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-bold">Accepted</h3>
+    <p id="hiredCount">0 Candidates</p>
+  </div>
+  <div class="bg-white p-4 rounded shadow">
+    <h3 class="font-bold">Rejected</h3>
+    <p id="rejectedCount">0 Candidates</p>
+  </div>
 </div>
 </section>
+
 
 <!-- SEARCH TALENT -->
 <section id="talent" class="tab">
@@ -195,10 +235,28 @@
 </div>
 </section>
 
+<section id="applications" class="tab">
+<h1 class="text-2xl font-bold mb-6">Applications</h1>
+
+<div class="bg-white rounded shadow overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-gray-100">
+<tr>
+  <th class="p-3">Freelancer</th>
+  <th>Job</th>
+  <th>Status</th>
+  <th>Action</th>
+</tr>
+</thead>
+<tbody id="appList"></tbody>
+</table>
+</div>
+</section>
+
 <!-- NOTIFICATIONS -->
 <section id="notifications" class="tab">
 <h1 class="text-2xl font-bold mb-6">Notifications</h1>
-<div class="bg-white p-6 rounded shadow space-y-2">
+<div id="notifList" class="bg-white p-6 rounded shadow space-y-2">
 <p>🔔 New applicant for Frontend role</p>
 <p>🔔 Interview scheduled with Mike</p>
 <p>🔔 Payment released</p>
@@ -210,17 +268,105 @@
 
 <script>
 function showTab(id){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
-document.getElementById(id).classList.add('active')
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
 }
-function toggleSidebar(){sidebar.classList.toggle('active')}
 
-new Chart(document.getElementById('applicationsChart'),{
-type:'line',
-data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat'],datasets:[{data:[5,9,8,14,12,18],borderWidth:2}]},
-options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
-})
+function toggleSidebar(){ sidebar.classList.toggle('active') }
+
+/* ---------- OVERVIEW ---------- */
+function loadOverview(){
+ fetch('recruiter_stats.php')
+  .then(r=>r.json())
+  .then(d=>{
+    totalJobs.innerText=d.jobs;
+    totalApplicants.innerText=d.applications;
+  });
+}
+
+/* ---------- POST JOB ---------- */
+function postJob(){
+ let f=new FormData();
+ f.append("title",jobTitle.value);
+ f.append("description",desc.value);
+ f.append("budget",budget.value);
+ f.append("job_type",jobType.value);
+
+ fetch("post_job.php",{method:"POST",body:f})
+ .then(r=>r.json())
+ .then(()=>{
+   alert("Job Posted Successfully");
+   loadOverview();
+   loadPipeline();
+ });
+}
+
+/* ---------- PIPELINE ---------- */
+function loadPipeline(){
+ fetch("backend/applications/pipeline.php")
+  .then(r=>r.json())
+  .then(d=>{
+    appliedCount.innerText=d.applied+" Candidates";
+    shortlistedCount.innerText=d.shortlisted+" Candidates";
+    interviewCount.innerText=d.interview+" Candidates";
+    hiredCount.innerText=d.hired+" Candidates";
+    rejectedCount.innerText=d.rejected+" Candidates";
+  });
+}
+
+/* ---------- APPLICATIONS ---------- */
+function loadApplications(){
+ fetch("get_applicants.php")
+  .then(r=>r.json())
+  .then(data=>{
+    appList.innerHTML="";
+    data.forEach(a=>{
+      appList.innerHTML+=`
+      <tr class="border-b">
+        <td class="p-3">${a.name}</td>
+        <td>${a.title}</td>
+        <td>${a.status}</td>
+        <td>
+          <button onclick="updateStatus(${a.application_id},'Accepted')"
+           class="text-green-600">Accept</button>
+          <button onclick="updateStatus(${a.application_id},'Rejected')"
+           class="text-red-600 ml-2">Reject</button>
+        </td>
+      </tr>`;
+    });
+  });
+}
+
+function updateStatus(id,status){
+ let f=new FormData();
+ f.append("application_id",id);
+ f.append("status",status);
+ fetch("update_application_status.php",{method:"POST",body:f})
+  .then(()=>{ loadApplications(); loadPipeline(); });
+}
+
+/* ---------- NOTIFICATIONS ---------- */
+function loadNotifications(){
+ fetch("get_notifications.php")
+  .then(r=>r.json())
+  .then(data=>{
+    notifList.innerHTML="";
+    data.forEach(n=>{
+      notifList.innerHTML+=`<p>🔔 ${n.message}</p>`;
+    });
+  });
+}
+
+/* INIT */
+loadOverview();
+loadPipeline();
+loadApplications();
+loadNotifications();
+
+setInterval(loadPipeline,5000);
+setInterval(loadNotifications,5000);
 </script>
+
 
 </body>
 </html>
