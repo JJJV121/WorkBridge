@@ -2,24 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WorkBridge – Recruiter Dashboard</title>
+<title>WorkBridge Recruiter Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-.tab{display:none}
-.tab.active{display:block}
-
-.sidebar{width:260px;transition:.3s}
-.sidebar.hide{margin-left:-260px}
+.section { display:none }
+.section.active { display:block }
 
 .card{
   background:#fff;
   border-radius:14px;
-  padding:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  padding:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.sidebar-item{
+  padding:12px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.sidebar-item:hover{ background:#eef2ff }
+.sidebar-item.active{
+  background:#e0e7ff;
+  font-weight:600;
 }
 
 .badge{
@@ -28,223 +36,1722 @@
   border-radius:999px;
   font-weight:600;
 }
-.blue{background:#e0e7ff;color:#3730a3}
 .green{background:#dcfce7;color:#166534}
 .yellow{background:#fef9c3;color:#854d0e}
-.red{background:#fee2e2;color:#991b1b}
+.blue{background:#e0e7ff;color:#3730a3}
 
-.side-item{
-  padding:12px 16px;
-  border-radius:10px;
-  cursor:pointer;
+button {
+  transition: all 0.2s ease;
 }
-.side-item:hover{background:#eef2ff}
-.side-item.active{background:#e0e7ff;font-weight:600}
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+button:active {
+  transform: translateY(0);
+}
 </style>
 </head>
 
-<body class="bg-slate-100 text-slate-800">
+<body class="bg-slate-100">
 
 <!-- HEADER -->
-<header class="bg-white shadow sticky top-0 z-50">
-  <div class="h-16 px-6 flex justify-between items-center">
-    <div class="flex items-center gap-3">
-      <button class="md:hidden" onclick="sidebar.classList.toggle('hide')">☰</button>
-      <b>WorkBridge Recruiter</b>
+<header class="bg-white shadow h-16 px-6 flex justify-between items-center sticky top-0 z-50">
+  <div class="flex items-center gap-2">
+    <div class="w-9 h-9 bg-indigo-600 text-white flex items-center justify-center rounded-lg font-bold">W</div>
+    <b class="text-indigo-600 text-lg">WorkBridge Recruiter</b>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <!-- Notifications -->
+    <div class="relative">
+      <button class="relative p-2 text-gray-600 hover:text-gray-900">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.558 3a2 2 0 00-1.94 1.515L2 7v10a2 2 0 002 2h1a2 2 0 002-2V7a2 2 0 00-2-2H4.558z"></path>
+        </svg>
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+      </button>
     </div>
-    <div class="flex items-center gap-3">
-      <img src="https://picsum.photos/36" class="rounded-full">
-      <span>Alex Johnson</span>
+
+    <!-- Search -->
+    <div class="relative">
+      <input type="text" placeholder="Search candidates..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+      <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
     </div>
+
+    <img src="https://picsum.photos/36" class="rounded-full">
+    <div class="text-right">
+      <div class="text-sm font-medium">Alex Johnson</div>
+      <div class="text-xs text-gray-500">Senior Recruiter</div>
+    </div>
+
+    <!-- Logout Button -->
+    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+      </svg>
+      <span>Logout</span>
+    </button>
   </div>
 </header>
 
 <div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
-<aside id="sidebar" class="sidebar bg-white shadow p-4 space-y-1">
-  <div class="side-item active" onclick="openTab('overview',this)">📊 Overview</div>
-  <div class="side-item" onclick="openTab('applications',this)">📂 Applications</div>
-  <div class="side-item" onclick="openTab('pipeline',this)">🔁 Pipeline</div>
-  <div class="side-item" onclick="openTab('talent',this)">🔍 Talent Pool</div>
-  <div class="side-item" onclick="openTab('saved',this)">⭐ Saved</div>
-  <div class="side-item" onclick="openTab('contracts',this)">📑 Contracts</div>
-  <div class="side-item" onclick="openTab('timesheets',this)">⏱ Timesheets</div>
-  <div class="side-item" onclick="openTab('interviews',this)">🎥 Interviews</div>
-  <div class="side-item" onclick="openTab('reports',this)">📈 Reports</div>
-  <div class="side-item" onclick="openTab('billing',this)">💳 Billing</div>
-  <div class="side-item" onclick="openTab('profile',this)">👤 Profile</div>
-  <div class="side-item" onclick="openTab('settings',this)">⚙ Settings</div>
+<aside class="w-64 bg-white shadow p-4 space-y-4">
+  <!-- Quick Stats -->
+  <div class="bg-indigo-50 p-4 rounded-lg">
+    <h3 class="font-semibold text-indigo-800 mb-2">Today's Summary</h3>
+    <div class="space-y-2 text-sm">
+      <div class="flex justify-between">
+        <span>New Applications</span>
+        <span class="font-medium">12</span>
+      </div>
+      <div class="flex justify-between">
+        <span>Interviews</span>
+        <span class="font-medium">5</span>
+      </div>
+      <div class="flex justify-between">
+        <span>Offers Sent</span>
+        <span class="font-medium">2</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="space-y-1">
+    <div class="sidebar-item active" onclick="show('overview',this)">📊 Overview</div>
+    <div class="sidebar-item" onclick="show('hire',this)">👥 Hire Talent</div>
+    <div class="sidebar-item" onclick="show('applications',this)">📂 Applications</div>
+    <div class="sidebar-item" onclick="show('pipeline',this)">🔁 Pipeline</div>
+    <div class="sidebar-item" onclick="show('postjob',this)">📝 Post Job</div>
+    <div class="sidebar-item" onclick="show('interviews',this)">🎥 Interviews</div>
+    <div class="sidebar-item" onclick="show('messages',this)">💬 Messages</div>
+    <div class="sidebar-item" onclick="show('work',this)">🛠 Work</div>
+    <div class="sidebar-item" onclick="show('reports',this)">💰 Reports</div>
+    <div class="sidebar-item" onclick="show('profile',this)">👤 Profile</div>
+  </div>
 </aside>
 
 <!-- MAIN -->
-<main class="flex-1 p-6 space-y-10 overflow-y-auto">
+<main class="flex-1 p-6 space-y-12 overflow-y-auto">
 
 <!-- ================= OVERVIEW ================= -->
-<section id="overview" class="tab active space-y-6">
+<section id="overview" class="section active space-y-6">
+
+<!-- Key Metrics -->
 <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
-  <div class="card">Jobs<br><b class="text-2xl">18</b></div>
-  <div class="card">Applicants<br><b class="text-2xl">326</b></div>
-  <div class="card">Shortlisted<br><b class="text-2xl">92</b></div>
-  <div class="card">Interviews<br><b class="text-2xl">48</b></div>
-  <div class="card">Offers<br><b class="text-2xl">21</b></div>
-  <div class="card">Hired<br><b class="text-2xl">14</b></div>
+  <div class="card text-center">
+    <div class="text-3xl font-bold text-indigo-600">18</div>
+    <div class="text-sm text-gray-600">Jobs Posted</div>
+    <div class="text-xs text-green-600 mt-1">+12% this month</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl font-bold text-blue-600">326</div>
+    <div class="text-sm text-gray-600">Applications</div>
+    <div class="text-xs text-green-600 mt-1">+8% this week</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl font-bold text-yellow-600">92</div>
+    <div class="text-sm text-gray-600">Shortlisted</div>
+    <div class="text-xs text-green-600 mt-1">28% conversion</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl font-bold text-purple-600">48</div>
+    <div class="text-sm text-gray-600">Interviews</div>
+    <div class="text-xs text-green-600 mt-1">52% of shortlisted</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl font-bold text-green-600">21</div>
+    <div class="text-sm text-gray-600">Offers</div>
+    <div class="text-xs text-green-600 mt-1">44% acceptance</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl font-bold text-indigo-600">14</div>
+    <div class="text-sm text-gray-600">Hired</div>
+    <div class="text-xs text-green-600 mt-1">67% of offers</div>
+  </div>
 </div>
 
+<!-- Charts and Analytics -->
+<div class="grid lg:grid-cols-3 gap-6">
+  <div class="card h-80">
+    <canvas id="overviewChart"></canvas>
+  </div>
+  <div class="card h-80">
+    <canvas id="funnelChart"></canvas>
+  </div>
+  <div class="card">
+    <h3 class="font-semibold mb-3">⚠ Priority Alerts</h3>
+    <div class="space-y-3">
+      <div class="flex items-start space-x-2 p-2 bg-red-50 rounded">
+        <span class="text-red-500">⏳</span>
+        <div>
+          <div class="text-sm font-medium">12 candidates waiting for feedback</div>
+          <div class="text-xs text-gray-600">Over 48 hours</div>
+        </div>
+      </div>
+      <div class="flex items-start space-x-2 p-2 bg-yellow-50 rounded">
+        <span class="text-yellow-500">🎥</span>
+        <div>
+          <div class="text-sm font-medium">5 interviews scheduled today</div>
+          <div class="text-xs text-gray-600">Next at 2:00 PM</div>
+        </div>
+      </div>
+      <div class="flex items-start space-x-2 p-2 bg-blue-50 rounded">
+        <span class="text-blue-500">📄</span>
+        <div>
+          <div class="text-sm font-medium">3 contracts expiring this week</div>
+          <div class="text-xs text-gray-600">Review required</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activities and Quick Actions -->
 <div class="grid lg:grid-cols-2 gap-6">
-  <div class="card"><canvas id="lineChart"></canvas></div>
-  <div class="card"><canvas id="pieChart"></canvas></div>
+  <div class="card">
+    <h3 class="font-semibold mb-3">📋 Recent Activities</h3>
+    <div class="space-y-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+        <div class="flex-1">
+          <div class="text-sm">Sarah Johnson accepted your offer</div>
+          <div class="text-xs text-gray-500">2 hours ago</div>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+        <div class="flex-1">
+          <div class="text-sm">Mike Chen completed interview round 1</div>
+          <div class="text-xs text-gray-500">4 hours ago</div>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+        <div class="flex-1">
+          <div class="text-sm">New application from Rahul Sharma</div>
+          <div class="text-xs text-gray-500">6 hours ago</div>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+        <div class="flex-1">
+          <div class="text-sm">Job posting for "Senior Developer" went live</div>
+          <div class="text-xs text-gray-500">1 day ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="font-semibold mb-3">⚡ Quick Actions</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <button class="bg-indigo-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+        📝 Post New Job
+      </button>
+      <button class="bg-green-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
+        👥 Review Candidates
+      </button>
+      <button class="bg-purple-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+        🎥 Schedule Interview
+      </button>
+      <button class="bg-yellow-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
+        📊 View Reports
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hiring Funnel Progress -->
+<div class="card">
+  <h3 class="font-semibold mb-4">🧭 Hiring Funnel Progress</h3>
+  <div class="grid grid-cols-5 gap-4 text-center">
+    <div>
+      <div class="text-2xl font-bold text-blue-600 mb-1">326</div>
+      <div class="text-sm text-gray-600">Applied</div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div class="bg-blue-600 h-2 rounded-full" style="width: 100%"></div>
+      </div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-yellow-600 mb-1">92</div>
+      <div class="text-sm text-gray-600">Shortlisted</div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div class="bg-yellow-600 h-2 rounded-full" style="width: 28%"></div>
+      </div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-purple-600 mb-1">48</div>
+      <div class="text-sm text-gray-600">Interviewed</div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div class="bg-purple-600 h-2 rounded-full" style="width: 15%"></div>
+      </div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-green-600 mb-1">21</div>
+      <div class="text-sm text-gray-600">Offered</div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div class="bg-green-600 h-2 rounded-full" style="width: 6%"></div>
+      </div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-indigo-600 mb-1">14</div>
+      <div class="text-sm text-gray-600">Hired</div>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div class="bg-indigo-600 h-2 rounded-full" style="width: 4%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 text-center">
+    <div class="text-sm text-gray-600">Overall Conversion Rate: <span class="font-semibold text-green-600">4.3%</span></div>
+  </div>
+</div>
+
+</section>
+
+<!-- ================= HIRE TALENT ================= -->
+<section id="hire" class="section space-y-6">
+<h2 class="text-xl font-bold">👥 Hire Talent</h2>
+
+<div class="grid md:grid-cols-3 gap-4">
+  <div class="card">
+    <b>Sarah Johnson</b><br>
+    Frontend • React<br>
+    ₹900/hr<br>
+    <span class="badge green">Available</span><br>
+    <button class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+  </div>
+  <div class="card">
+    <b>Anita Rao</b><br>
+    Backend • Java<br>
+    ₹800/hr<br>
+    <span class="badge yellow">Busy</span><br>
+    <button class="mt-2 bg-gray-500 text-white px-4 py-2 rounded" disabled>Contact Later</button>
+  </div>
+  <div class="card">
+    <b>Mike Chen</b><br>
+    UI/UX • Figma<br>
+    ₹850/hr<br>
+    <span class="badge green">Available</span><br>
+    <button class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+  </div>
+  <div class="card">
+    <b>Rahul Sharma</b><br>
+    Full Stack • MERN<br>
+    ₹950/hr<br>
+    <span class="badge green">Available</span><br>
+    <button class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+  </div>
+  <div class="card">
+    <b>Emily Davis</b><br>
+    Data Science • Python<br>
+    ₹1000/hr<br>
+    <span class="badge yellow">Busy</span><br>
+    <button class="mt-2 bg-gray-500 text-white px-4 py-2 rounded" disabled>Contact Later</button>
+  </div>
+  <div class="card">
+    <b>Carlos Rodriguez</b><br>
+    DevOps • AWS<br>
+    ₹900/hr<br>
+    <span class="badge green">Available</span><br>
+    <button class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+  </div>
 </div>
 </section>
 
 <!-- ================= APPLICATIONS ================= -->
-<section id="applications" class="tab">
-<div class="card overflow-x-auto">
-<table class="w-full min-w-[1000px] text-sm">
-<thead class="bg-slate-100">
-<tr>
-<th class="p-3">Candidate</th><th>Role</th><th>Exp</th><th>Status</th><th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr class="border-t">
-<td class="p-3">Sarah Johnson</td><td>Frontend</td><td>6 yrs</td>
-<td><span class="badge blue">Applied</span></td>
-<td><button class="text-green-600">Shortlist</button></td>
-</tr>
-<tr class="border-t">
-<td class="p-3">Rahul Mehta</td><td>Backend</td><td>4 yrs</td>
-<td><span class="badge yellow">Shortlisted</span></td>
-<td><button class="text-indigo-600">Interview</button></td>
-</tr>
-</tbody>
-</table>
+<section id="applications" class="section space-y-6">
+<h2 class="text-xl font-bold">📂 Applications</h2>
+
+<div class="bg-white rounded-lg shadow overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-gray-50 border-b">
+      <tr>
+        <th class="px-6 py-4 text-left font-semibold text-gray-900">Candidate</th>
+        <th class="px-6 py-4 text-left font-semibold text-gray-900">Position</th>
+        <th class="px-6 py-4 text-left font-semibold text-gray-900">Experience</th>
+        <th class="px-6 py-4 text-left font-semibold text-gray-900">Applied Date</th>
+        <th class="px-6 py-4 text-left font-semibold text-gray-900">Status</th>
+        <th class="px-6 py-4 text-center font-semibold text-gray-900">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <img class="h-10 w-10 rounded-full mr-3" src="https://picsum.photos/40?random=1" alt="">
+            <div>
+              <div class="font-medium text-gray-900">Sarah Johnson</div>
+              <div class="text-gray-500">sarah.j@email.com</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-900">Frontend Developer</td>
+        <td class="px-6 py-4 text-gray-900">3 years</td>
+        <td class="px-6 py-4 text-gray-900">Oct 10, 2023</td>
+        <td class="px-6 py-4"><span class="badge blue">Applied</span></td>
+        <td class="px-6 py-4 text-center">
+          <button class="bg-green-600 text-white px-3 py-1 rounded text-xs mr-1">Shortlist</button>
+          <button class="bg-gray-600 text-white px-3 py-1 rounded text-xs">View</button>
+        </td>
+      </tr>
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <img class="h-10 w-10 rounded-full mr-3" src="https://picsum.photos/40?random=2" alt="">
+            <div>
+              <div class="font-medium text-gray-900">Mike Chen</div>
+              <div class="text-gray-500">mike.chen@email.com</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-900">UI/UX Designer</td>
+        <td class="px-6 py-4 text-gray-900">4 years</td>
+        <td class="px-6 py-4 text-gray-900">Oct 8, 2023</td>
+        <td class="px-6 py-4"><span class="badge yellow">Interview</span></td>
+        <td class="px-6 py-4 text-center">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">View Details</button>
+        </td>
+      </tr>
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <img class="h-10 w-10 rounded-full mr-3" src="https://picsum.photos/40?random=3" alt="">
+            <div>
+              <div class="font-medium text-gray-900">Rahul Sharma</div>
+              <div class="text-gray-500">rahul.sharma@email.com</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-900">Full Stack Developer</td>
+        <td class="px-6 py-4 text-gray-900">5 years</td>
+        <td class="px-6 py-4 text-gray-900">Oct 12, 2023</td>
+        <td class="px-6 py-4"><span class="badge blue">Applied</span></td>
+        <td class="px-6 py-4 text-center">
+          <button class="bg-green-600 text-white px-3 py-1 rounded text-xs mr-1">Shortlist</button>
+          <button class="bg-gray-600 text-white px-3 py-1 rounded text-xs">View</button>
+        </td>
+      </tr>
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <img class="h-10 w-10 rounded-full mr-3" src="https://picsum.photos/40?random=4" alt="">
+            <div>
+              <div class="font-medium text-gray-900">Emily Davis</div>
+              <div class="text-gray-500">emily.davis@email.com</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-900">Data Scientist</td>
+        <td class="px-6 py-4 text-gray-900">3 years</td>
+        <td class="px-6 py-4 text-gray-900">Oct 9, 2023</td>
+        <td class="px-6 py-4"><span class="badge green">Shortlisted</span></td>
+        <td class="px-6 py-4 text-center">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">Schedule Interview</button>
+        </td>
+      </tr>
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4">
+          <div class="flex items-center">
+            <img class="h-10 w-10 rounded-full mr-3" src="https://picsum.photos/40?random=5" alt="">
+            <div>
+              <div class="font-medium text-gray-900">Carlos Rodriguez</div>
+              <div class="text-gray-500">carlos.rodriguez@email.com</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 text-gray-900">DevOps Engineer</td>
+        <td class="px-6 py-4 text-gray-900">6 years</td>
+        <td class="px-6 py-4 text-gray-900">Oct 7, 2023</td>
+        <td class="px-6 py-4"><span class="badge yellow">Interview</span></td>
+        <td class="px-6 py-4 text-center">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">View Details</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="flex justify-between items-center mt-4">
+  <div class="text-sm text-gray-600">
+    Showing 5 of 326 applications
+  </div>
+  <div class="flex space-x-2">
+    <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm">Previous</button>
+    <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">1</button>
+    <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm">2</button>
+    <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm">3</button>
+    <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm">Next</button>
+  </div>
 </div>
 </section>
 
 <!-- ================= PIPELINE ================= -->
-<section id="pipeline" class="tab">
-<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-<div class="card"><b>Applied</b><ul class="mt-2 text-sm"><li>Sarah</li><li>Neha</li><li>Arjun</li></ul></div>
-<div class="card"><b>Shortlisted</b><ul class="mt-2 text-sm"><li>Rahul</li><li>Pooja</li></ul></div>
-<div class="card"><b>Interview</b><ul class="mt-2 text-sm"><li>Mike</li><li>Anita</li></ul></div>
-<div class="card"><b>Offer</b><ul class="mt-2 text-sm"><li>Sneha</li></ul></div>
-<div class="card"><b>Hired</b><ul class="mt-2 text-sm"><li>Amit</li><li>Karan</li></ul></div>
+<section id="pipeline" class="section space-y-6">
+<h2 class="text-xl font-bold">🔁 Recruitment Pipeline</h2>
+
+<div class="grid md:grid-cols-5 gap-4">
+  <div class="card bg-blue-50 border-l-4 border-blue-500">
+    <div class="flex justify-between items-center mb-3">
+      <b class="text-blue-700">Applied</b>
+      <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">4</span>
+    </div>
+    <div class="space-y-2">
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Sarah Johnson</div>
+        <div class="text-xs text-gray-600">Frontend Developer</div>
+        <div class="text-xs text-gray-500">Applied 2 days ago</div>
+      </div>
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Neha Patel</div>
+        <div class="text-xs text-gray-600">Backend Developer</div>
+        <div class="text-xs text-gray-500">Applied 1 day ago</div>
+      </div>
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">David Kim</div>
+        <div class="text-xs text-gray-600">Full Stack</div>
+        <div class="text-xs text-gray-500">Applied 3 days ago</div>
+      </div>
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Lisa Wong</div>
+        <div class="text-xs text-gray-600">UI/UX Designer</div>
+        <div class="text-xs text-gray-500">Applied 1 day ago</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-yellow-50 border-l-4 border-yellow-500">
+    <div class="flex justify-between items-center mb-3">
+      <b class="text-yellow-700">Shortlisted</b>
+      <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">2</span>
+    </div>
+    <div class="space-y-2">
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Rahul Sharma</div>
+        <div class="text-xs text-gray-600">Full Stack Developer</div>
+        <div class="text-xs text-gray-500">Shortlisted 2 days ago</div>
+        <button class="mt-1 bg-yellow-600 text-white text-xs px-2 py-1 rounded">Review</button>
+      </div>
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Emily Davis</div>
+        <div class="text-xs text-gray-600">Data Scientist</div>
+        <div class="text-xs text-gray-500">Shortlisted 1 day ago</div>
+        <button class="mt-1 bg-yellow-600 text-white text-xs px-2 py-1 rounded">Review</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-purple-50 border-l-4 border-purple-500">
+    <div class="flex justify-between items-center mb-3">
+      <b class="text-purple-700">Interview</b>
+      <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">2</span>
+    </div>
+    <div class="space-y-2">
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Mike Chen</div>
+        <div class="text-xs text-gray-600">UI/UX Designer</div>
+        <div class="text-xs text-gray-500">Interview: Oct 13, 2PM</div>
+        <button class="mt-1 bg-purple-600 text-white text-xs px-2 py-1 rounded">Join</button>
+      </div>
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Carlos Rodriguez</div>
+        <div class="text-xs text-gray-600">DevOps Engineer</div>
+        <div class="text-xs text-gray-500">Interview: Oct 15, 3PM</div>
+        <button class="mt-1 bg-purple-600 text-white text-xs px-2 py-1 rounded">Join</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-green-50 border-l-4 border-green-500">
+    <div class="flex justify-between items-center mb-3">
+      <b class="text-green-700">Offer</b>
+      <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">1</span>
+    </div>
+    <div class="space-y-2">
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Sneha Gupta</div>
+        <div class="text-xs text-gray-600">Product Manager</div>
+        <div class="text-xs text-gray-500">Offer sent 2 days ago</div>
+        <button class="mt-1 bg-green-600 text-white text-xs px-2 py-1 rounded">Follow Up</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-indigo-50 border-l-4 border-indigo-500">
+    <div class="flex justify-between items-center mb-3">
+      <b class="text-indigo-700">Hired</b>
+      <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">2</span>
+    </div>
+    <div class="space-y-2">
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Amit Singh</div>
+        <div class="text-xs text-gray-600">Software Engineer</div>
+        <div class="text-xs text-gray-500">Started Oct 1</div>
+        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded mt-1">Active</span>
+      </div>
+      <div class="bg-white p-2 rounded shadow-sm">
+        <div class="font-medium text-sm">Priya Mehta</div>
+        <div class="text-xs text-gray-600">Frontend Developer</div>
+        <div class="text-xs text-gray-500">Started Oct 5</div>
+        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded mt-1">Active</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-6">
+  <h3 class="font-semibold mb-3">📊 Pipeline Analytics</h3>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+    <div>
+      <div class="text-2xl font-bold text-blue-600">4</div>
+      <div class="text-sm text-gray-600">Applied</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-yellow-600">2</div>
+      <div class="text-sm text-gray-600">Shortlisted</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-purple-600">2</div>
+      <div class="text-sm text-gray-600">Interviewing</div>
+    </div>
+    <div>
+      <div class="text-2xl font-bold text-green-600">50%</div>
+      <div class="text-sm text-gray-600">Conversion Rate</div>
+    </div>
+  </div>
 </div>
 </section>
 
-<!-- ================= TALENT ================= -->
-<section id="talent" class="tab grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-<div class="card">👩‍💻 Sarah Johnson<br>Frontend • 6 yrs<br>₹900/hr<br><button class="mt-2 text-indigo-600">Invite</button></div>
-<div class="card">🎨 Mike Chen<br>UI/UX • 5 yrs<br>₹850/hr<br><button class="mt-2 text-indigo-600">Invite</button></div>
-<div class="card">⚙ Anita Rao<br>Backend • 4 yrs<br>₹800/hr<br><button class="mt-2 text-indigo-600">Invite</button></div>
-</section>
+<!-- ================= POST JOB ================= -->
+<section id="postjob" class="section space-y-6">
+<h2 class="text-xl font-bold">📝 Post a New Job</h2>
 
-<!-- ================= SAVED ================= -->
-<section id="saved" class="tab">
-<ul class="bg-white rounded-xl shadow divide-y">
-<li class="p-4 flex justify-between">⭐ Sarah Johnson <button class="text-indigo-600">Contact</button></li>
-<li class="p-4 flex justify-between">⭐ Anita Rao <button class="text-indigo-600">Contact</button></li>
-<li class="p-4 flex justify-between">⭐ Amit Kumar <button class="text-indigo-600">Contact</button></li>
-</ul>
-</section>
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Job Form -->
+  <div class="lg:col-span-2 space-y-6">
+    <div class="card">
+      <h3 class="font-semibold mb-4">Job Details</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Job Title *</label>
+          <input type="text" class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="e.g. Senior Frontend Developer">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Job Category</label>
+          <select class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            <option>Web Development</option>
+            <option>Mobile Development</option>
+            <option>UI/UX Design</option>
+            <option>Data Science</option>
+            <option>DevOps</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+          <select class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            <option>Entry Level (0-2 years)</option>
+            <option>Mid Level (3-5 years)</option>
+            <option>Senior Level (5+ years)</option>
+            <option>Expert (8+ years)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Project Type</label>
+          <select class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            <option>Fixed Price</option>
+            <option>Hourly Rate</option>
+            <option>Full-time</option>
+            <option>Part-time</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Budget Range (₹)</label>
+          <div class="flex space-x-2">
+            <input type="number" class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Min">
+            <input type="number" class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Max">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Estimated Duration</label>
+          <select class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            <option>Less than 1 month</option>
+            <option>1-3 months</option>
+            <option>3-6 months</option>
+            <option>6+ months</option>
+          </select>
+        </div>
+      </div>
 
-<!-- ================= CONTRACTS ================= -->
-<section id="contracts" class="tab">
-<table class="w-full bg-white rounded-xl shadow text-sm">
-<tr class="bg-slate-100">
-<th class="p-3 text-left">Project</th><th>Status</th><th>Amount</th><th>Action</th>
-</tr>
-<tr class="border-t"><td class="p-3">Frontend Website</td><td><span class="badge green">Active</span></td><td>₹1,20,000</td><td><button class="text-indigo-600">Download</button></td></tr>
-<tr class="border-t"><td class="p-3">Backend API</td><td><span class="badge green">Active</span></td><td>₹95,000</td><td><button class="text-indigo-600">Download</button></td></tr>
-</table>
-</section>
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Required Skills *</label>
+        <input type="text" class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="React, JavaScript, HTML, CSS (comma separated)">
+      </div>
 
-<!-- ================= TIMESHEETS ================= -->
-<section id="timesheets" class="tab space-y-4">
-<div class="card flex justify-between">Sarah – 32 hrs <span class="badge green">Approved</span></div>
-<div class="card flex justify-between">Mike – 18 hrs <span class="badge yellow">Pending</span></div>
-<div class="card flex justify-between">Anita – 24 hrs <span class="badge green">Approved</span></div>
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Job Description *</label>
+        <textarea rows="6" class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Describe the project requirements, deliverables, and expectations..."></textarea>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Preferred Qualifications</label>
+        <textarea rows="3" class="w-full border border-gray-300 p-2 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Optional: Additional skills, certifications, or experience that would be beneficial..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-4">Additional Settings</h3>
+      <div class="space-y-4">
+        <div class="flex items-center">
+          <input type="checkbox" id="remote" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+          <label for="remote" class="ml-2 text-sm text-gray-700">Remote work allowed</label>
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="urgent" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+          <label for="urgent" class="ml-2 text-sm text-gray-700">Urgent hiring (featured placement)</label>
+        </div>
+        <div class="flex items-center">
+          <input type="checkbox" id="nda" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+          <label for="nda" class="ml-2 text-sm text-gray-700">NDA required</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview & Actions -->
+  <div class="space-y-6">
+    <div class="card">
+      <h3 class="font-semibold mb-4">Job Preview</h3>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <div class="font-medium text-lg mb-2" id="preview-title">Job Title</div>
+        <div class="text-sm text-gray-600 mb-2" id="preview-category">Category • Experience Level</div>
+        <div class="text-sm text-green-600 font-medium mb-2" id="preview-budget">Budget Range</div>
+        <div class="text-sm text-gray-700 line-clamp-3" id="preview-description">Job description preview...</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-4">Publish Options</h3>
+      <div class="space-y-3">
+        <button class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+          📝 Publish Job
+        </button>
+        <button class="w-full bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+          💾 Save as Draft
+        </button>
+        <button class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors">
+          🎯 Post & Auto-Match
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-4">Quick Tips</h3>
+      <ul class="text-sm space-y-2 text-gray-600">
+        <li>• Be specific about requirements</li>
+        <li>• Include clear deliverables</li>
+        <li>• Set realistic budgets</li>
+        <li>• Highlight unique aspects</li>
+      </ul>
+    </div>
+  </div>
+</div>
 </section>
 
 <!-- ================= INTERVIEWS ================= -->
-<section id="interviews" class="tab space-y-4">
-<div class="card flex justify-between flex-wrap gap-2">
-<span>🎥 Sarah – Oct 12 – Zoom</span>
-<div>
-<button class="bg-indigo-600 text-white px-3 py-1 rounded">Join</button>
-<button class="border px-3 py-1 rounded">Feedback</button>
+<section id="interviews" class="section space-y-6">
+<h2 class="text-xl font-bold">🎥 Interview Management</h2>
+
+<!-- Interview Stats -->
+<div class="grid md:grid-cols-4 gap-4 mb-6">
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-blue-600">8</div>
+    <div class="text-sm text-gray-600">Scheduled</div>
+    <div class="text-xs text-blue-600 mt-1">This week</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-green-600">12</div>
+    <div class="text-sm text-gray-600">Completed</div>
+    <div class="text-xs text-green-600 mt-1">This month</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-yellow-600">3</div>
+    <div class="text-sm text-gray-600">Pending Feedback</div>
+    <div class="text-xs text-yellow-600 mt-1">Action needed</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-purple-600">85%</div>
+    <div class="text-sm text-gray-600">Success Rate</div>
+    <div class="text-xs text-purple-600 mt-1">Last 30 days</div>
+  </div>
 </div>
+
+<div class="grid lg:grid-cols-2 gap-6">
+  <!-- Upcoming Interviews -->
+  <div class="card">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-semibold">📅 Upcoming Interviews</h3>
+      <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">Schedule New</button>
+    </div>
+    <div class="space-y-4">
+      <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="font-medium">Sarah Johnson</div>
+            <div class="text-sm text-gray-600">Frontend Developer</div>
+          </div>
+          <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Round 1</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-2">
+          <div>📅 Oct 12, 2023 • 10:00 AM</div>
+          <div>🎥 Zoom Meeting</div>
+        </div>
+        <div class="flex space-x-2">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">Join Meeting</button>
+          <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs">Reschedule</button>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="font-medium">Mike Chen</div>
+            <div class="text-sm text-gray-600">UI/UX Designer</div>
+          </div>
+          <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Final Round</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-2">
+          <div>📅 Oct 13, 2023 • 2:00 PM</div>
+          <div>🎥 Microsoft Teams</div>
+        </div>
+        <div class="flex space-x-2">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">Join Meeting</button>
+          <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs">View Profile</button>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="font-medium">Rahul Sharma</div>
+            <div class="text-sm text-gray-600">Full Stack Developer</div>
+          </div>
+          <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Technical</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-2">
+          <div>📅 Oct 14, 2023 • 11:00 AM</div>
+          <div>🎥 Zoom Meeting</div>
+        </div>
+        <div class="flex space-x-2">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">Join Meeting</button>
+          <button class="bg-red-500 text-white px-3 py-1 rounded text-xs">Cancel</button>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <div class="font-medium">Carlos Rodriguez</div>
+            <div class="text-sm text-gray-600">DevOps Engineer</div>
+          </div>
+          <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Panel</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-2">
+          <div>📅 Oct 15, 2023 • 3:00 PM</div>
+          <div>🎥 Google Meet</div>
+        </div>
+        <div class="flex space-x-2">
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">Join Meeting</button>
+          <button class="bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs">Add Notes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Interviews & Feedback -->
+  <div class="space-y-6">
+    <div class="card">
+      <h3 class="font-semibold mb-4">📝 Pending Feedback</h3>
+      <div class="space-y-3">
+        <div class="border border-yellow-200 bg-yellow-50 rounded-lg p-3">
+          <div class="font-medium text-sm">Emily Davis - Data Scientist</div>
+          <div class="text-xs text-gray-600 mb-2">Interview completed 2 days ago</div>
+          <button class="bg-yellow-600 text-white px-3 py-1 rounded text-xs">Add Feedback</button>
+        </div>
+        <div class="border border-yellow-200 bg-yellow-50 rounded-lg p-3">
+          <div class="font-medium text-sm">Lisa Wong - UI Designer</div>
+          <div class="text-xs text-gray-600 mb-2">Interview completed 1 day ago</div>
+          <button class="bg-yellow-600 text-white px-3 py-1 rounded text-xs">Add Feedback</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-4">✅ Recent Feedback</h3>
+      <div class="space-y-3">
+        <div class="border border-green-200 bg-green-50 rounded-lg p-3">
+          <div class="font-medium text-sm">David Kim - Full Stack</div>
+          <div class="text-xs text-gray-600 mb-1">Interview: Oct 8, 2023</div>
+          <div class="text-xs text-green-700">⭐⭐⭐⭐⭐ Strong technical skills, great fit</div>
+        </div>
+        <div class="border border-red-200 bg-red-50 rounded-lg p-3">
+          <div class="font-medium text-sm">Neha Patel - Backend</div>
+          <div class="text-xs text-gray-600 mb-1">Interview: Oct 7, 2023</div>
+          <div class="text-xs text-red-700">⭐⭐⭐ Limited experience with required tech stack</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="font-semibold mb-4">📊 Interview Templates</h3>
+      <div class="space-y-2">
+        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div class="font-medium text-sm">Technical Developer Interview</div>
+          <div class="text-xs text-gray-600">45 min • 12 questions</div>
+        </button>
+        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div class="font-medium text-sm">UI/UX Designer Interview</div>
+          <div class="text-xs text-gray-600">60 min • 15 questions</div>
+        </button>
+        <button class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+          <div class="font-medium text-sm">Data Science Interview</div>
+          <div class="text-xs text-gray-600">50 min • 10 questions</div>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="card flex justify-between flex-wrap gap-2">
-<span>🎥 Mike – Oct 14 – Meet</span>
-<div>
-<button class="bg-indigo-600 text-white px-3 py-1 rounded">Join</button>
-<button class="border px-3 py-1 rounded">Reschedule</button>
+</section>
+
+<!-- ================= MESSAGES ================= -->
+<section id="messages" class="section space-y-6">
+<h2 class="text-xl font-bold">💬 Messages & Communication</h2>
+
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Conversations List -->
+  <div class="lg:col-span-1">
+    <div class="card">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-semibold">Conversations</h3>
+        <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">New Message</button>
+      </div>
+
+      <div class="space-y-2">
+        <div class="p-3 border border-indigo-200 bg-indigo-50 rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center space-x-2">
+              <img src="https://picsum.photos/32?random=1" class="w-8 h-8 rounded-full">
+              <div>
+                <div class="font-medium text-sm">Sarah Johnson</div>
+                <div class="text-xs text-gray-600">Frontend Developer</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500">2h ago</div>
+          </div>
+          <div class="text-sm text-gray-700 truncate">Yes, I'm available to start Monday...</div>
+        </div>
+
+        <div class="p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center space-x-2">
+              <img src="https://picsum.photos/32?random=2" class="w-8 h-8 rounded-full">
+              <div>
+                <div class="font-medium text-sm">Mike Chen</div>
+                <div class="text-xs text-gray-600">UI/UX Designer</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500">4h ago</div>
+          </div>
+          <div class="text-sm text-gray-700 truncate">You're welcome! See you tomorrow.</div>
+        </div>
+
+        <div class="p-3 border border-yellow-200 bg-yellow-50 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors relative">
+          <div class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full"></div>
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center space-x-2">
+              <img src="https://picsum.photos/32?random=3" class="w-8 h-8 rounded-full">
+              <div>
+                <div class="font-medium text-sm">Rahul Sharma</div>
+                <div class="text-xs text-gray-600">Full Stack Developer</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500">6h ago</div>
+          </div>
+          <div class="text-sm text-gray-700 truncate">When will I hear back about the offer?</div>
+        </div>
+
+        <div class="p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center space-x-2">
+              <img src="https://picsum.photos/32?random=4" class="w-8 h-8 rounded-full">
+              <div>
+                <div class="font-medium text-sm">Emily Davis</div>
+                <div class="text-xs text-gray-600">Data Scientist</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500">1d ago</div>
+          </div>
+          <div class="text-sm text-gray-700 truncate">Thanks for the interview feedback...</div>
+        </div>
+
+        <div class="p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+          <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center space-x-2">
+              <img src="https://picsum.photos/32?random=5" class="w-8 h-8 rounded-full">
+              <div>
+                <div class="font-medium text-sm">Carlos Rodriguez</div>
+                <div class="text-xs text-gray-600">DevOps Engineer</div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500">2d ago</div>
+          </div>
+          <div class="text-sm text-gray-700 truncate">Project requirements look good...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Interface -->
+  <div class="lg:col-span-2">
+    <div class="card h-96 flex flex-col">
+      <!-- Chat Header -->
+      <div class="border-b border-gray-200 p-4">
+        <div class="flex items-center space-x-3">
+          <img src="https://picsum.photos/40?random=1" class="w-10 h-10 rounded-full">
+          <div>
+            <div class="font-medium">Sarah Johnson</div>
+            <div class="text-sm text-gray-600">Frontend Developer • Online</div>
+          </div>
+          <div class="ml-auto flex space-x-2">
+            <button class="text-gray-600 hover:text-gray-900 p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+            </button>
+            <button class="text-gray-600 hover:text-gray-900 p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="flex justify-start">
+          <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
+            <div class="text-sm">Hi Alex! Thanks for reaching out about the frontend position.</div>
+            <div class="text-xs text-gray-500 mt-1">10:30 AM</div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <div class="bg-indigo-600 text-white rounded-lg px-4 py-2 max-w-xs">
+            <div class="text-sm">Hi Sarah! Great to hear from you. I was impressed with your portfolio.</div>
+            <div class="text-xs text-indigo-200 mt-1">10:32 AM</div>
+          </div>
+        </div>
+
+        <div class="flex justify-start">
+          <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
+            <div class="text-sm">Thank you! I'm really excited about this opportunity.</div>
+            <div class="text-xs text-gray-500 mt-1">10:33 AM</div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <div class="bg-indigo-600 text-white rounded-lg px-4 py-2 max-w-xs">
+            <div class="text-sm">Can you start Monday? We'd love to get you onboarded ASAP.</div>
+            <div class="text-xs text-indigo-200 mt-1">10:35 AM</div>
+          </div>
+        </div>
+
+        <div class="flex justify-start">
+          <div class="bg-green-100 rounded-lg px-4 py-2 max-w-xs">
+            <div class="text-sm">Yes, I'm available to start Monday. Should I prepare anything specific?</div>
+            <div class="text-xs text-gray-500 mt-1">10:36 AM</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="border-t border-gray-200 p-4">
+        <div class="flex space-x-2">
+          <input type="text" placeholder="Type your message..." class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+          <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="flex justify-between items-center mt-2">
+          <div class="flex space-x-2">
+            <button class="text-gray-600 hover:text-gray-900 p-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+              </svg>
+            </button>
+            <button class="text-gray-600 hover:text-gray-900 p-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="text-xs text-gray-500">Press Enter to send</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Quick Actions -->
+<div class="grid md:grid-cols-3 gap-4 mt-6">
+  <div class="card text-center">
+    <div class="text-2xl mb-2">📧</div>
+    <div class="font-medium mb-1">Bulk Messaging</div>
+    <div class="text-sm text-gray-600 mb-3">Send messages to multiple candidates</div>
+    <button class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">Start Campaign</button>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl mb-2">📝</div>
+    <div class="font-medium mb-1">Message Templates</div>
+    <div class="text-sm text-gray-600 mb-3">Use pre-written responses</div>
+    <button class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">View Templates</button>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl mb-2">📊</div>
+    <div class="font-medium mb-1">Response Analytics</div>
+    <div class="text-sm text-gray-600 mb-3">Track message engagement</div>
+    <button class="bg-indigo-600 text-white px-4 py-2 rounded text-sm">View Stats</button>
+  </div>
+</div>
+</section>
+
+<!-- ================= WORK ================= -->
+<section id="work" class="section space-y-6">
+<h2 class="text-xl font-bold">🛠 Work Management</h2>
+
+<!-- Work Stats -->
+<div class="grid md:grid-cols-4 gap-4">
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-blue-600">4</div>
+    <div class="text-sm text-gray-600">Active Projects</div>
+    <div class="text-xs text-blue-600 mt-1">On track</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-green-600">146</div>
+    <div class="text-sm text-gray-600">Hours This Month</div>
+    <div class="text-xs text-green-600 mt-1">+12% vs last month</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-yellow-600">₹1,29,000</div>
+    <div class="text-sm text-gray-600">Pending Payments</div>
+    <div class="text-xs text-yellow-600 mt-1">3 freelancers</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-purple-600">95%</div>
+    <div class="text-sm text-gray-600">On-Time Delivery</div>
+    <div class="text-xs text-purple-600 mt-1">Last 30 days</div>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6">
+  <!-- Active Projects -->
+  <div class="card">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-semibold">📋 Active Projects</h3>
+      <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">New Project</button>
+    </div>
+    <div class="space-y-4">
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-medium">Frontend Website Redesign</div>
+            <div class="text-sm text-gray-600">Sarah Johnson • Frontend Developer</div>
+          </div>
+          <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">In Progress</span>
+        </div>
+        <div class="mb-3">
+          <div class="flex justify-between text-sm mb-1">
+            <span>Progress</span>
+            <span>75%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-green-600 h-2 rounded-full" style="width: 75%"></div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <div class="text-gray-600">
+            <div>32/40 hours completed</div>
+            <div>₹28,800 total • ₹800/hr</div>
+          </div>
+          <div class="flex space-x-2">
+            <button class="bg-blue-600 text-white px-2 py-1 rounded text-xs">View Details</button>
+            <button class="bg-gray-600 text-white px-2 py-1 rounded text-xs">Message</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-medium">Backend API Development</div>
+            <div class="text-sm text-gray-600">Anita Rao • Backend Developer</div>
+          </div>
+          <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Review Pending</span>
+        </div>
+        <div class="mb-3">
+          <div class="flex justify-between text-sm mb-1">
+            <span>Progress</span>
+            <span>90%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-600 h-2 rounded-full" style="width: 90%"></div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <div class="text-gray-600">
+            <div>22/24 hours completed</div>
+            <div>₹19,200 total • ₹800/hr</div>
+          </div>
+          <div class="flex space-x-2">
+            <button class="bg-green-600 text-white px-2 py-1 rounded text-xs">Approve</button>
+            <button class="bg-gray-600 text-white px-2 py-1 rounded text-xs">Request Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-medium">UI/UX Design System</div>
+            <div class="text-sm text-gray-600">Mike Chen • UI/UX Designer</div>
+          </div>
+          <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">On Hold</span>
+        </div>
+        <div class="mb-3">
+          <div class="flex justify-between text-sm mb-1">
+            <span>Progress</span>
+            <span>60%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-yellow-600 h-2 rounded-full" style="width: 60%"></div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <div class="text-gray-600">
+            <div>24/40 hours completed</div>
+            <div>₹20,400 total • ₹850/hr</div>
+          </div>
+          <div class="flex space-x-2">
+            <button class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Resume</button>
+            <button class="bg-red-600 text-white px-2 py-1 rounded text-xs">Terminate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <div class="font-medium">Full Stack E-commerce App</div>
+            <div class="text-sm text-gray-600">Rahul Sharma • Full Stack Developer</div>
+          </div>
+          <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">In Progress</span>
+        </div>
+        <div class="mb-3">
+          <div class="flex justify-between text-sm mb-1">
+            <span>Progress</span>
+            <span>40%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="bg-green-600 h-2 rounded-full" style="width: 40%"></div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center text-sm">
+          <div class="text-gray-600">
+            <div>20/50 hours completed</div>
+            <div>₹19,000 total • ₹950/hr</div>
+          </div>
+          <div class="flex space-x-2">
+            <button class="bg-blue-600 text-white px-2 py-1 rounded text-xs">View Details</button>
+            <button class="bg-gray-600 text-white px-2 py-1 rounded text-xs">Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Management Tools -->
+  <div class="space-y-6">
+    <!-- Time Tracking -->
+    <div class="card">
+      <h3 class="font-semibold mb-4">⏱️ Time Tracking</h3>
+      <div class="space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm">This Week</span>
+          <span class="font-medium">42 hours</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm">This Month</span>
+          <span class="font-medium">146 hours</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm">Average per Project</span>
+          <span class="font-medium">36.5 hours</span>
+        </div>
+      </div>
+      <button class="w-full mt-4 bg-indigo-600 text-white py-2 px-4 rounded text-sm">View Detailed Report</button>
+    </div>
+
+    <!-- Milestones & Deadlines -->
+    <div class="card">
+      <h3 class="font-semibold mb-4">🎯 Upcoming Milestones</h3>
+      <div class="space-y-3">
+        <div class="flex items-center space-x-3 p-2 bg-red-50 rounded">
+          <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+          <div class="flex-1">
+            <div class="text-sm font-medium">Frontend Website - Final Review</div>
+            <div class="text-xs text-gray-600">Due in 2 days</div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3 p-2 bg-yellow-50 rounded">
+          <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+          <div class="flex-1">
+            <div class="text-sm font-medium">API Development - Testing Phase</div>
+            <div class="text-xs text-gray-600">Due in 5 days</div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3 p-2 bg-blue-50 rounded">
+          <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+          <div class="flex-1">
+            <div class="text-sm font-medium">Design System - Component Library</div>
+            <div class="text-xs text-gray-600">Due in 1 week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+      <h3 class="font-semibold mb-4">⚡ Quick Actions</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <button class="bg-green-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
+          💰 Process Payment
+        </button>
+        <button class="bg-blue-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+          📄 Generate Invoice
+        </button>
+        <button class="bg-purple-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+          📊 Project Report
+        </button>
+        <button class="bg-yellow-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
+          ⭐ Leave Review
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Completed Projects -->
+<div class="card mt-6">
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="font-semibold">✅ Completed Projects</h3>
+    <button class="text-indigo-600 text-sm hover:text-indigo-800">View All</button>
+  </div>
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="border border-gray-200 rounded-lg p-4">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <div class="font-medium">Mobile App Development</div>
+          <div class="text-sm text-gray-600">Emily Davis • Data Scientist</div>
+        </div>
+        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Completed</span>
+      </div>
+      <div class="text-sm text-gray-600">
+        <div>Delivered: Oct 10, 2023</div>
+        <div>Total: ₹45,000 • 5.0 ⭐ rating</div>
+      </div>
+    </div>
+    <div class="border border-gray-200 rounded-lg p-4">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <div class="font-medium">DevOps Infrastructure Setup</div>
+          <div class="text-sm text-gray-600">Carlos Rodriguez • DevOps Engineer</div>
+        </div>
+        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Completed</span>
+      </div>
+      <div class="text-sm text-gray-600">
+        <div>Delivered: Oct 5, 2023</div>
+        <div>Total: ₹38,000 • 4.8 ⭐ rating</div>
+      </div>
+    </div>
+  </div>
 </div>
 </section>
 
 <!-- ================= REPORTS ================= -->
-<section id="reports" class="tab grid md:grid-cols-4 gap-4">
-<div class="card">Total Spend<br><b>₹2.3L</b></div>
-<div class="card">Cost / Hire<br><b>₹18k</b></div>
-<div class="card">Offer Ratio<br><b>64%</b></div>
-<div class="card">Top Skill<br><b>React</b></div>
-</section>
+<section id="reports" class="section space-y-6">
+<h2 class="text-xl font-bold">💰 Reports & Analytics</h2>
 
-<!-- ================= BILLING ================= -->
-<section id="billing" class="tab space-y-6">
-<div class="grid md:grid-cols-3 gap-4">
-<div class="card">💼 Plan<br><b>Pro</b></div>
-<div class="card">💰 Outstanding<br><b>₹30,000</b></div>
-<div class="card">📅 Next Billing<br><b>12 Nov</b></div>
+<!-- Financial Overview -->
+<div class="grid md:grid-cols-4 gap-4">
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-green-600">₹1,20,000</div>
+    <div class="text-sm text-gray-600">Paid This Week</div>
+    <div class="text-xs text-green-600 mt-1">+15% vs last week</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-yellow-600">₹30,000</div>
+    <div class="text-sm text-gray-600">Pending Payments</div>
+    <div class="text-xs text-gray-600 mt-1">3 freelancers</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-blue-600">₹2.3L</div>
+    <div class="text-sm text-gray-600">Total Spend YTD</div>
+    <div class="text-xs text-blue-600 mt-1">+8% vs last year</div>
+  </div>
+  <div class="card text-center">
+    <div class="text-2xl font-bold text-purple-600">₹85,000</div>
+    <div class="text-sm text-gray-600">Avg. Project Cost</div>
+    <div class="text-xs text-purple-600 mt-1">12 projects</div>
+  </div>
 </div>
 
-<div class="card overflow-x-auto">
-<table class="w-full text-sm">
-<tr class="bg-slate-100">
-<th class="p-3">Invoice</th><th>Amount</th><th>Status</th><th>Action</th>
-</tr>
-<tr class="border-t">
-<td class="p-3">INV-1023</td><td>₹45,000</td>
-<td><span class="badge yellow">Pending</span></td>
-<td><button class="bg-green-600 text-white px-3 py-1 rounded">Pay</button></td>
-</tr>
-<tr class="border-t">
-<td class="p-3">INV-1018</td><td>₹60,000</td>
-<td><span class="badge green">Paid</span></td>
-<td><button class="border px-3 py-1 rounded">Download</button></td>
-</tr>
-</table>
+<!-- Charts Row -->
+<div class="grid lg:grid-cols-2 gap-6">
+  <div class="card h-80">
+    <canvas id="reportsChart"></canvas>
+  </div>
+  <div class="card">
+    <h3 class="font-semibold mb-3">📈 Monthly Performance</h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <span class="text-sm">September</span>
+        <div class="flex items-center space-x-2">
+          <div class="w-24 bg-gray-200 rounded-full h-2">
+            <div class="bg-green-600 h-2 rounded-full" style="width: 80%"></div>
+          </div>
+          <span class="text-sm font-medium">₹1,80,000</span>
+        </div>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm">October</span>
+        <div class="flex items-center space-x-2">
+          <div class="w-24 bg-gray-200 rounded-full h-2">
+            <div class="bg-green-600 h-2 rounded-full" style="width: 90%"></div>
+          </div>
+          <span class="text-sm font-medium">₹2,10,000</span>
+        </div>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm">November</span>
+        <div class="flex items-center space-x-2">
+          <div class="w-24 bg-gray-200 rounded-full h-2">
+            <div class="bg-yellow-600 h-2 rounded-full" style="width: 85%"></div>
+          </div>
+          <span class="text-sm font-medium">₹1,95,000</span>
+        </div>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-sm">December</span>
+        <div class="flex items-center space-x-2">
+          <div class="w-24 bg-gray-200 rounded-full h-2">
+            <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+          </div>
+          <span class="text-sm font-medium">₹2,30,000</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Detailed Analytics -->
+<div class="grid lg:grid-cols-3 gap-6">
+  <div class="card">
+    <h3 class="font-semibold mb-3">🏆 Top Performing Freelancers</h3>
+    <div class="space-y-3">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <img src="https://picsum.photos/32?random=1" class="w-8 h-8 rounded-full">
+          <div>
+            <div class="text-sm font-medium">Sarah Johnson</div>
+            <div class="text-xs text-gray-500">Frontend Dev</div>
+          </div>
+        </div>
+        <span class="text-sm font-medium text-green-600">₹45,000</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <img src="https://picsum.photos/32?random=2" class="w-8 h-8 rounded-full">
+          <div>
+            <div class="text-sm font-medium">Mike Chen</div>
+            <div class="text-xs text-gray-500">UI/UX Designer</div>
+          </div>
+        </div>
+        <span class="text-sm font-medium text-green-600">₹38,000</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <img src="https://picsum.photos/32?random=3" class="w-8 h-8 rounded-full">
+          <div>
+            <div class="text-sm font-medium">Carlos Rodriguez</div>
+            <div class="text-xs text-gray-500">DevOps Engineer</div>
+          </div>
+        </div>
+        <span class="text-sm font-medium text-green-600">₹42,000</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="font-semibold mb-3">📊 Hiring Metrics</h3>
+    <div class="space-y-4">
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span>Time to Hire</span>
+          <span class="font-medium">12 days</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-indigo-600 h-2 rounded-full" style="width: 75%"></div>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">Target: 10 days</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span>Offer Acceptance</span>
+          <span class="font-medium">67%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-600 h-2 rounded-full" style="width: 67%"></div>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">Industry avg: 60%</div>
+      </div>
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span>Candidate Quality</span>
+          <span class="font-medium">8.5/10</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-yellow-600 h-2 rounded-full" style="width: 85%"></div>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">Based on reviews</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="font-semibold mb-3">💡 Insights & Recommendations</h3>
+    <div class="space-y-3">
+      <div class="p-3 bg-blue-50 rounded-lg">
+        <div class="text-sm font-medium text-blue-800">Increase DevOps hiring</div>
+        <div class="text-xs text-blue-600 mt-1">High demand, low supply in your area</div>
+      </div>
+      <div class="p-3 bg-green-50 rounded-lg">
+        <div class="text-sm font-medium text-green-800">Frontend rates trending up</div>
+        <div class="text-xs text-green-600 mt-1">Consider budget adjustments</div>
+      </div>
+      <div class="p-3 bg-yellow-50 rounded-lg">
+        <div class="text-sm font-medium text-yellow-800">Interview feedback needed</div>
+        <div class="text-xs text-yellow-600 mt-1">12 candidates waiting >48hrs</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </section>
 
 <!-- ================= PROFILE ================= -->
-<section id="profile" class="tab">
-<div class="card space-y-2">
-<p><b>Name:</b> Alex Johnson</p>
-<p><b>Email:</b> alex@workbridge.com</p>
-<p><b>Role:</b> Recruiter</p>
-<button class="mt-3 bg-indigo-600 text-white px-4 py-1 rounded">Edit Profile</button>
-</div>
-</section>
+<section id="profile" class="section space-y-6">
+<h2 class="text-xl font-bold">👤 Profile & Settings</h2>
 
-<!-- ================= SETTINGS ================= -->
-<section id="settings" class="tab space-y-4">
-<div class="card">
-<label class="block mb-2">Notifications</label>
-<select class="border p-2 rounded w-full">
-<option>Enabled</option>
-<option>Disabled</option>
-</select>
-</div>
-<div class="card">
-<label class="block mb-2">Theme</label>
-<select class="border p-2 rounded w-full">
-<option>Light</option>
-<option>Dark</option>
-</select>
+<div class="grid lg:grid-cols-3 gap-6">
+  <!-- Profile Overview -->
+  <div class="lg:col-span-1">
+    <div class="card text-center">
+      <img src="https://picsum.photos/120?random=1" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-indigo-100">
+      <h3 class="font-semibold text-lg">Alex Johnson</h3>
+      <p class="text-gray-600 text-sm mb-2">Senior Recruiter</p>
+      <div class="flex justify-center space-x-2 mb-4">
+        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Verified</span>
+        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Premium</span>
+      </div>
+      <div class="space-y-2 text-sm text-gray-600">
+        <div>📧 alex@workbridge.com</div>
+        <div>📱 +1 (555) 123-4567</div>
+        <div>🏢 TechCorp Inc.</div>
+        <div>📍 San Francisco, CA</div>
+      </div>
+      <button class="w-full mt-4 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition-colors">
+        Edit Profile Picture
+      </button>
+    </div>
+
+    <!-- Account Stats -->
+    <div class="card mt-6">
+      <h3 class="font-semibold mb-4">📊 Account Statistics</h3>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-sm text-gray-600">Member Since</span>
+          <span class="text-sm font-medium">Jan 2020</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-sm text-gray-600">Jobs Posted</span>
+          <span class="text-sm font-medium">156</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-sm text-gray-600">Hires Made</span>
+          <span class="text-sm font-medium">89</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-sm text-gray-600">Success Rate</span>
+          <span class="text-sm font-medium text-green-600">72%</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-sm text-gray-600">Total Spent</span>
+          <span class="text-sm font-medium">₹8.5L</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Details & Settings -->
+  <div class="lg:col-span-2 space-y-6">
+    <!-- Personal Information -->
+    <div class="card">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-semibold">Personal Information</h3>
+        <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">Edit</button>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <input type="text" value="Alex Johnson" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+          <input type="email" value="alex@workbridge.com" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+          <input type="tel" value="+1 (555) 123-4567" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+          <input type="date" value="1985-06-15" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+          <input type="text" value="San Francisco, CA" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+          <select class="w-full border border-gray-300 p-2 rounded-lg" disabled>
+            <option>PST (UTC-8)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Information -->
+    <div class="card">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-semibold">Company Information</h3>
+        <button class="bg-indigo-600 text-white px-3 py-1 rounded text-sm">Edit</button>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+          <input type="text" value="TechCorp Inc." class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+          <input type="text" value="Technology" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Company Size</label>
+          <input type="text" value="500-1000 employees" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Website</label>
+          <input type="url" value="https://techcorp.com" class="w-full border border-gray-300 p-2 rounded-lg" readonly>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Settings -->
+    <div class="card">
+      <h3 class="font-semibold mb-4">Account Settings</h3>
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium text-sm">Email Notifications</div>
+            <div class="text-xs text-gray-600">Receive updates about applications and interviews</div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" checked>
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium text-sm">SMS Notifications</div>
+            <div class="text-xs text-gray-600">Get text messages for urgent updates</div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium text-sm">Two-Factor Authentication</div>
+            <div class="text-xs text-gray-600">Add an extra layer of security</div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" checked>
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium text-sm">Profile Visibility</div>
+            <div class="text-xs text-gray-600">Show your profile to freelancers</div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer" checked>
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Privacy -->
+    <div class="card">
+      <h3 class="font-semibold mb-4">Security & Privacy</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <button class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+          🔑 Change Password
+        </button>
+        <button class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+          📱 Manage Devices
+        </button>
+        <button class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+          📊 Download Data
+        </button>
+        <button class="bg-red-100 text-red-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-red-200 transition-colors">
+          🗑️ Delete Account
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 </section>
 
@@ -252,25 +1759,100 @@
 </div>
 
 <script>
-function openTab(id,el){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('active'));
-el.classList.add('active');
+function show(id,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
 }
 
-new Chart(lineChart,{
-type:'line',
-data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-datasets:[{data:[22,35,48,60,72,85,96],borderColor:'#4f46e5'}]},
-options:{plugins:{legend:{display:false}}}
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    // In a real application, this would make an API call to logout
+    // For now, we'll redirect to the login page
+    window.location.href = 'login.html';
+  }
+}
+
+new Chart(document.getElementById('overviewChart'),{
+  type:'line',
+  data:{
+    labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets:[{
+      label: 'Applications',
+      data:[40,55,70,85,95,110,130],
+      borderColor:'#4f46e5',
+      backgroundColor:'rgba(79, 70, 229, 0.1)',
+      fill: true
+    }]
+  },
+  options:{
+    responsive: true,
+    plugins:{
+      legend:{display:false},
+      title:{display:true,text:'Weekly Applications Trend'}
+    },
+    scales:{
+      y:{
+        beginAtZero: true
+      }
+    }
+  }
 });
 
-new Chart(pieChart,{
-type:'doughnut',
-data:{labels:['React','Backend','UI/UX','DevOps'],
-datasets:[{data:[35,30,20,15],
-backgroundColor:['#4f46e5','#22c55e','#f59e0b','#ef4444']}]}
+new Chart(document.getElementById('funnelChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Applied', 'Shortlisted', 'Interviewed', 'Offered', 'Hired'],
+    datasets:[{
+      data:[326, 92, 48, 21, 14],
+      backgroundColor:['#3b82f6', '#eab308', '#a855f7', '#22c55e', '#6366f1'],
+      borderWidth: 0
+    }]
+  },
+  options:{
+    responsive: true,
+    plugins:{
+      legend:{
+        position: 'bottom',
+        labels:{
+          padding: 20,
+          usePointStyle: true
+        }
+      },
+      title:{display:true,text:'Hiring Funnel Distribution'}
+    }
+  }
+});
+
+new Chart(document.getElementById('reportsChart'),{
+  type:'bar',
+  data:{
+    labels:['Sep','Oct','Nov','Dec'],
+    datasets:[{
+      label: 'Monthly Spend (₹)',
+      data:[180000,210000,195000,230000],
+      backgroundColor:'#4f46e5',
+      borderRadius: 4
+    }]
+  },
+  options:{
+    responsive: true,
+    plugins:{
+      legend:{display:false},
+      title:{display:true,text:'Monthly Spend Trends'}
+    },
+    scales:{
+      y:{
+        beginAtZero: true,
+        ticks:{
+          callback: function(value) {
+            return '₹' + (value / 1000) + 'K';
+          }
+        }
+      }
+    }
+  }
 });
 </script>
 
