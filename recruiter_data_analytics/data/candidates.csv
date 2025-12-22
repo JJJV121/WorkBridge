@@ -1,0 +1,5 @@
+candidate_id,name,role,source,status,applied_date,hired_date,recruiter
+1,Aarav,Frontend,LinkedIn,Interviewed,2024-01-02,
+2,Meera,Backend,Referral,Hired,2024-01-05,2024-01-20,Rahul
+3,Rohan,UI/UX,Website,Rejected,2024-01-07,
+4,Sneha,Full Stack,LinkedIn,Hired,2024-01-10,2024-01-25,Anita
