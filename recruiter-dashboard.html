@@ -2,35 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Recruiter Dashboard — WorkBridge</title>
+<title>WorkBridge – Recruiter Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* ---------- CORE ---------- */
-.sidebar{transform:translateX(-100%);transition:.25s}
-.sidebar.active{transform:translateX(0)}
-@media(min-width:768px){.sidebar{transform:translateX(0)}}
 .tab{display:none}
 .tab.active{display:block}
 
-/* ---------- CARDS ---------- */
+.sidebar{width:260px;transition:.3s}
+.sidebar.hide{margin-left:-260px}
+
 .card{
   background:#fff;
-  border-radius:16px;
+  border-radius:14px;
   padding:16px;
-  box-shadow:0 12px 35px rgba(0,0,0,.08);
-  transition:.25s;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
-.card:hover{transform:translateY(-3px)}
 
-/* ---------- BADGES ---------- */
 .badge{
+  font-size:12px;
   padding:4px 10px;
   border-radius:999px;
-  font-size:12px;
   font-weight:600;
 }
 .blue{background:#e0e7ff;color:#3730a3}
@@ -38,293 +33,217 @@
 .yellow{background:#fef9c3;color:#854d0e}
 .red{background:#fee2e2;color:#991b1b}
 
-/* ---------- SIDEBAR ---------- */
 .side-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
   padding:12px 16px;
-  border-radius:12px;
+  border-radius:10px;
   cursor:pointer;
-  transition:.2s;
 }
 .side-item:hover{background:#eef2ff}
-.side-item.active{
-  background:#e0e7ff;
-  font-weight:600;
-}
-
-/* ---------- PROFILE DROPDOWN ---------- */
-.dropdown{
-  position:absolute;
-  right:0;
-  top:110%;
-  width:180px;
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 20px 50px rgba(0,0,0,.2);
-  display:none;
-}
-.dropdown.active{display:block}
-.dropdown a{
-  display:block;
-  padding:10px 14px;
-  cursor:pointer;
-}
-.dropdown a:hover{background:#f1f5f9}
+.side-item.active{background:#e0e7ff;font-weight:600}
 </style>
 </head>
 
 <body class="bg-slate-100 text-slate-800">
 
-<!-- ================= HEADER ================= -->
+<!-- HEADER -->
 <header class="bg-white shadow sticky top-0 z-50">
   <div class="h-16 px-6 flex justify-between items-center">
-
     <div class="flex items-center gap-3">
-      <button onclick="toggleSidebar()" class="md:hidden">☰</button>
-      <span class="text-indigo-600 text-xl">💼</span>
-      <span class="font-bold text-lg">WorkBridge Recruiter</span>
+      <button class="md:hidden" onclick="sidebar.classList.toggle('hide')">☰</button>
+      <b>WorkBridge Recruiter</b>
     </div>
-
-    <!-- PROFILE -->
-    <div class="relative">
-      <button onclick="toggleProfile()" class="flex items-center gap-2">
-        <img src="https://picsum.photos/36" class="rounded-full">
-        <span class="text-sm font-medium">Alex</span>
-        <span>▾</span>
-      </button>
-
-      <div id="profileMenu" class="dropdown">
-        <a onclick="openTab('profile')">👤 Profile</a>
-        <a onclick="openTab('settings')">⚙ Settings</a>
-        <a onclick="logout()" class="text-red-600">🚪 Logout</a>
-      </div>
+    <div class="flex items-center gap-3">
+      <img src="https://picsum.photos/36" class="rounded-full">
+      <span>Alex Johnson</span>
     </div>
-
   </div>
 </header>
 
-<div class="flex">
+<div class="flex min-h-screen">
 
-<!-- ================= SIDEBAR ================= -->
-<aside id="sidebar"
- class="sidebar fixed md:relative w-64 bg-white shadow h-screen overflow-y-auto pb-24">
-<nav class="p-4 space-y-1 text-sm">
-
-<div class="side-item active" onclick="openTab('overview')">
-  <span>📊 Overview</span><span class="badge blue">Live</span>
-</div>
-
-<div class="side-item" onclick="openTab('postjob')">
-  <span>📝 Post Job</span><span class="badge green">New</span>
-</div>
-
-<div class="side-item" onclick="openTab('pipeline')">
-  <span>🔁 Pipeline</span><span class="badge blue">148</span>
-</div>
-
-<div class="side-item" onclick="openTab('applications')">
-  <span>📂 Applications</span><span class="badge yellow">42</span>
-</div>
-
-<div class="side-item" onclick="openTab('talent')">
-  <span>🔍 Talent</span><span class="badge green">AI</span>
-</div>
-
-<div class="side-item" onclick="openTab('saved')">
-  <span>⭐ Saved</span><span class="badge blue">5</span>
-</div>
-
-<div class="side-item" onclick="openTab('contracts')">
-  <span>📑 Contracts</span><span class="badge green">3</span>
-</div>
-
-<div class="side-item" onclick="openTab('timesheets')">
-  <span>⏱ Timesheets</span><span class="badge yellow">12</span>
-</div>
-
-<div class="side-item" onclick="openTab('interviews')">
-  <span>🎥 Interviews</span><span class="badge blue">4</span>
-</div>
-
-<div class="side-item" onclick="openTab('reports')">
-  <span>📈 Reports</span><span class="badge blue">Stats</span>
-</div>
-
-<div class="side-item" onclick="openTab('billing')">
-  <span>💳 Billing</span><span class="badge red">₹30k</span>
-</div>
-
-</nav>
+<!-- SIDEBAR -->
+<aside id="sidebar" class="sidebar bg-white shadow p-4 space-y-1">
+  <div class="side-item active" onclick="openTab('overview',this)">📊 Overview</div>
+  <div class="side-item" onclick="openTab('applications',this)">📂 Applications</div>
+  <div class="side-item" onclick="openTab('pipeline',this)">🔁 Pipeline</div>
+  <div class="side-item" onclick="openTab('talent',this)">🔍 Talent Pool</div>
+  <div class="side-item" onclick="openTab('saved',this)">⭐ Saved</div>
+  <div class="side-item" onclick="openTab('contracts',this)">📑 Contracts</div>
+  <div class="side-item" onclick="openTab('timesheets',this)">⏱ Timesheets</div>
+  <div class="side-item" onclick="openTab('interviews',this)">🎥 Interviews</div>
+  <div class="side-item" onclick="openTab('reports',this)">📈 Reports</div>
+  <div class="side-item" onclick="openTab('billing',this)">💳 Billing</div>
+  <div class="side-item" onclick="openTab('profile',this)">👤 Profile</div>
+  <div class="side-item" onclick="openTab('settings',this)">⚙ Settings</div>
 </aside>
 
-<!-- ================= MAIN ================= -->
-<main class="flex-1 p-6 md:ml-64 space-y-12">
+<!-- MAIN -->
+<main class="flex-1 p-6 space-y-10 overflow-y-auto">
 
 <!-- ================= OVERVIEW ================= -->
-<section id="overview" class="tab active">
-<h1 class="text-2xl font-bold mb-6">📊 Overview</h1>
-
-<div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
-<div class="card">Jobs<p class="text-3xl font-bold">12</p></div>
-<div class="card">Applicants<p class="text-3xl font-bold">148</p></div>
-<div class="card">Shortlisted<p class="text-3xl font-bold">42</p></div>
-<div class="card">Interviews<p class="text-3xl font-bold">21</p></div>
-<div class="card">Hired<p class="text-3xl font-bold">9</p></div>
-<div class="card">Avg Hire<p class="text-3xl font-bold">8d</p></div>
+<section id="overview" class="tab active space-y-6">
+<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
+  <div class="card">Jobs<br><b class="text-2xl">18</b></div>
+  <div class="card">Applicants<br><b class="text-2xl">326</b></div>
+  <div class="card">Shortlisted<br><b class="text-2xl">92</b></div>
+  <div class="card">Interviews<br><b class="text-2xl">48</b></div>
+  <div class="card">Offers<br><b class="text-2xl">21</b></div>
+  <div class="card">Hired<br><b class="text-2xl">14</b></div>
 </div>
 
-<div class="card mt-6">
-<canvas id="chart"></canvas>
-</div>
-</section>
-
-<!-- ================= POST JOB ================= -->
-<section id="postjob" class="tab">
-<h1 class="text-2xl font-bold mb-6">📝 Post Job</h1>
-<div class="card grid md:grid-cols-2 gap-4">
-<input class="border p-2 rounded" placeholder="Job Title">
-<input class="border p-2 rounded" placeholder="Skills">
-<select class="border p-2 rounded"><option>Remote</option><option>Hybrid</option></select>
-<select class="border p-2 rounded"><option>Full Time</option><option>Contract</option></select>
-<textarea class="md:col-span-2 border p-2 rounded" placeholder="Job description"></textarea>
-<button class="md:col-span-2 bg-indigo-600 text-white py-3 rounded">Publish Job</button>
-</div>
-</section>
-
-<!-- ================= PIPELINE ================= -->
-<section id="pipeline" class="tab">
-<h1 class="text-2xl font-bold mb-6">🔁 Hiring Pipeline</h1>
-<div class="grid md:grid-cols-5 gap-4">
-<div class="card">Applied<p class="text-xl">148</p></div>
-<div class="card">Shortlisted<p class="text-xl">42</p></div>
-<div class="card">Interview<p class="text-xl">21</p></div>
-<div class="card">Offer<p class="text-xl">12</p></div>
-<div class="card">Hired<p class="text-xl">9</p></div>
+<div class="grid lg:grid-cols-2 gap-6">
+  <div class="card"><canvas id="lineChart"></canvas></div>
+  <div class="card"><canvas id="pieChart"></canvas></div>
 </div>
 </section>
 
 <!-- ================= APPLICATIONS ================= -->
 <section id="applications" class="tab">
-<h1 class="text-2xl font-bold mb-6">📂 Applications</h1>
+<div class="card overflow-x-auto">
+<table class="w-full min-w-[1000px] text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3">Candidate</th><th>Role</th><th>Exp</th><th>Status</th><th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-t">
+<td class="p-3">Sarah Johnson</td><td>Frontend</td><td>6 yrs</td>
+<td><span class="badge blue">Applied</span></td>
+<td><button class="text-green-600">Shortlist</button></td>
+</tr>
+<tr class="border-t">
+<td class="p-3">Rahul Mehta</td><td>Backend</td><td>4 yrs</td>
+<td><span class="badge yellow">Shortlisted</span></td>
+<td><button class="text-indigo-600">Interview</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ================= PIPELINE ================= -->
+<section id="pipeline" class="tab">
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<div class="card"><b>Applied</b><ul class="mt-2 text-sm"><li>Sarah</li><li>Neha</li><li>Arjun</li></ul></div>
+<div class="card"><b>Shortlisted</b><ul class="mt-2 text-sm"><li>Rahul</li><li>Pooja</li></ul></div>
+<div class="card"><b>Interview</b><ul class="mt-2 text-sm"><li>Mike</li><li>Anita</li></ul></div>
+<div class="card"><b>Offer</b><ul class="mt-2 text-sm"><li>Sneha</li></ul></div>
+<div class="card"><b>Hired</b><ul class="mt-2 text-sm"><li>Amit</li><li>Karan</li></ul></div>
+</div>
+</section>
+
+<!-- ================= TALENT ================= -->
+<section id="talent" class="tab grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="card">👩‍💻 Sarah Johnson<br>Frontend • 6 yrs<br>₹900/hr<br><button class="mt-2 text-indigo-600">Invite</button></div>
+<div class="card">🎨 Mike Chen<br>UI/UX • 5 yrs<br>₹850/hr<br><button class="mt-2 text-indigo-600">Invite</button></div>
+<div class="card">⚙ Anita Rao<br>Backend • 4 yrs<br>₹800/hr<br><button class="mt-2 text-indigo-600">Invite</button></div>
+</section>
+
+<!-- ================= SAVED ================= -->
+<section id="saved" class="tab">
+<ul class="bg-white rounded-xl shadow divide-y">
+<li class="p-4 flex justify-between">⭐ Sarah Johnson <button class="text-indigo-600">Contact</button></li>
+<li class="p-4 flex justify-between">⭐ Anita Rao <button class="text-indigo-600">Contact</button></li>
+<li class="p-4 flex justify-between">⭐ Amit Kumar <button class="text-indigo-600">Contact</button></li>
+</ul>
+</section>
+
+<!-- ================= CONTRACTS ================= -->
+<section id="contracts" class="tab">
+<table class="w-full bg-white rounded-xl shadow text-sm">
+<tr class="bg-slate-100">
+<th class="p-3 text-left">Project</th><th>Status</th><th>Amount</th><th>Action</th>
+</tr>
+<tr class="border-t"><td class="p-3">Frontend Website</td><td><span class="badge green">Active</span></td><td>₹1,20,000</td><td><button class="text-indigo-600">Download</button></td></tr>
+<tr class="border-t"><td class="p-3">Backend API</td><td><span class="badge green">Active</span></td><td>₹95,000</td><td><button class="text-indigo-600">Download</button></td></tr>
+</table>
+</section>
+
+<!-- ================= TIMESHEETS ================= -->
+<section id="timesheets" class="tab space-y-4">
+<div class="card flex justify-between">Sarah – 32 hrs <span class="badge green">Approved</span></div>
+<div class="card flex justify-between">Mike – 18 hrs <span class="badge yellow">Pending</span></div>
+<div class="card flex justify-between">Anita – 24 hrs <span class="badge green">Approved</span></div>
+</section>
+
+<!-- ================= INTERVIEWS ================= -->
+<section id="interviews" class="tab space-y-4">
+<div class="card flex justify-between flex-wrap gap-2">
+<span>🎥 Sarah – Oct 12 – Zoom</span>
+<div>
+<button class="bg-indigo-600 text-white px-3 py-1 rounded">Join</button>
+<button class="border px-3 py-1 rounded">Feedback</button>
+</div>
+</div>
+<div class="card flex justify-between flex-wrap gap-2">
+<span>🎥 Mike – Oct 14 – Meet</span>
+<div>
+<button class="bg-indigo-600 text-white px-3 py-1 rounded">Join</button>
+<button class="border px-3 py-1 rounded">Reschedule</button>
+</div>
+</div>
+</section>
+
+<!-- ================= REPORTS ================= -->
+<section id="reports" class="tab grid md:grid-cols-4 gap-4">
+<div class="card">Total Spend<br><b>₹2.3L</b></div>
+<div class="card">Cost / Hire<br><b>₹18k</b></div>
+<div class="card">Offer Ratio<br><b>64%</b></div>
+<div class="card">Top Skill<br><b>React</b></div>
+</section>
+
+<!-- ================= BILLING ================= -->
+<section id="billing" class="tab space-y-6">
+<div class="grid md:grid-cols-3 gap-4">
+<div class="card">💼 Plan<br><b>Pro</b></div>
+<div class="card">💰 Outstanding<br><b>₹30,000</b></div>
+<div class="card">📅 Next Billing<br><b>12 Nov</b></div>
+</div>
+
 <div class="card overflow-x-auto">
 <table class="w-full text-sm">
 <tr class="bg-slate-100">
-<th class="p-3">Candidate</th><th>Role</th><th>Status</th><th>Action</th>
+<th class="p-3">Invoice</th><th>Amount</th><th>Status</th><th>Action</th>
 </tr>
-<tr>
-<td class="p-3">Sarah Johnson</td>
-<td>Frontend</td>
-<td><span class="badge blue">Applied</span></td>
-<td>
-<button class="text-green-600">Shortlist</button>
-<button class="text-red-600 ml-2">Reject</button>
-</td>
+<tr class="border-t">
+<td class="p-3">INV-1023</td><td>₹45,000</td>
+<td><span class="badge yellow">Pending</span></td>
+<td><button class="bg-green-600 text-white px-3 py-1 rounded">Pay</button></td>
 </tr>
-<tr>
-<td class="p-3">Mike Chen</td>
-<td>UI/UX</td>
-<td><span class="badge green">Interview</span></td>
-<td><button class="text-indigo-600">Schedule</button></td>
+<tr class="border-t">
+<td class="p-3">INV-1018</td><td>₹60,000</td>
+<td><span class="badge green">Paid</span></td>
+<td><button class="border px-3 py-1 rounded">Download</button></td>
 </tr>
 </table>
 </div>
 </section>
 
-<!-- ================= TALENT ================= -->
-<section id="talent" class="tab">
-<h1 class="text-2xl font-bold mb-6">🔍 Talent Pool</h1>
-<div class="grid md:grid-cols-2 gap-4">
-<div class="card">
-<p class="font-bold">👩‍💻 Sarah Johnson</p>
-<p>Frontend • 6 yrs • ₹900/hr</p>
-<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Invite</button>
-</div>
-<div class="card">
-<p class="font-bold">👨‍💻 Mike Chen</p>
-<p>UI/UX • 5 yrs • ₹850/hr</p>
-<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Invite</button>
-</div>
-</div>
-</section>
-
-<!-- ================= SAVED ================= -->
-<section id="saved" class="tab">
-<h1 class="text-2xl font-bold mb-6">⭐ Saved Freelancers</h1>
-<div class="card">
-<p>Sarah Johnson — Frontend</p>
-<p>Mike Chen — UI/UX</p>
-</div>
-</section>
-
-<!-- ================= CONTRACTS ================= -->
-<section id="contracts" class="tab">
-<h1 class="text-2xl font-bold mb-6">📑 Contracts</h1>
-<div class="grid md:grid-cols-3 gap-4">
-<div class="card"><b>Frontend Website</b><p>Status: <span class="badge green">Active</span></p></div>
-<div class="card"><b>UI Redesign</b><p>Status: <span class="badge yellow">On Hold</span></p></div>
-<div class="card"><b>Backend API</b><p>Status: <span class="badge blue">Completed</span></p></div>
-</div>
-</section>
-
-<!-- ================= TIMESHEETS ================= -->
-<section id="timesheets" class="tab">
-<h1 class="text-2xl font-bold mb-6">⏱ Timesheets</h1>
-<div class="card">
-<p>Sarah — 32 hrs <span class="badge green">Approved</span></p>
-<p>Mike — 18 hrs <span class="badge yellow">Pending</span></p>
-</div>
-</section>
-
-<!-- ================= INTERVIEWS ================= -->
-<section id="interviews" class="tab">
-<h1 class="text-2xl font-bold mb-6">🎥 Interviews</h1>
-<div class="card">
-<p>Sarah — Oct 12, 4:00 PM</p>
-<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Join Call</button>
-</div>
-</section>
-
-<!-- ================= REPORTS ================= -->
-<section id="reports" class="tab">
-<h1 class="text-2xl font-bold mb-6">📈 Reports</h1>
-<div class="grid md:grid-cols-3 gap-4">
-<div class="card">Total Spend<p class="text-xl font-bold">₹1.8L</p></div>
-<div class="card">Cost / Hire<p class="text-xl font-bold">₹20k</p></div>
-<div class="card">Top Skill<p class="text-xl font-bold">React</p></div>
-</div>
-</section>
-
-<!-- ================= BILLING ================= -->
-<section id="billing" class="tab">
-<h1 class="text-2xl font-bold mb-6">💳 Billing</h1>
-<div class="grid md:grid-cols-3 gap-4">
-<div class="card">Plan<p class="text-xl font-bold">Pro</p></div>
-<div class="card">Pending<p class="text-xl font-bold">₹30,000</p></div>
-<div class="card">Next Billing<p class="text-xl font-bold">12 Oct</p></div>
-</div>
-<button class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded">Pay Invoice</button>
-</section>
-
 <!-- ================= PROFILE ================= -->
 <section id="profile" class="tab">
-<h1 class="text-2xl font-bold mb-6">👤 Profile</h1>
-<div class="card">
+<div class="card space-y-2">
 <p><b>Name:</b> Alex Johnson</p>
 <p><b>Email:</b> alex@workbridge.com</p>
 <p><b>Role:</b> Recruiter</p>
+<button class="mt-3 bg-indigo-600 text-white px-4 py-1 rounded">Edit Profile</button>
 </div>
 </section>
 
 <!-- ================= SETTINGS ================= -->
-<section id="settings" class="tab">
-<h1 class="text-2xl font-bold mb-6">⚙ Settings</h1>
+<section id="settings" class="tab space-y-4">
 <div class="card">
 <label class="block mb-2">Notifications</label>
 <select class="border p-2 rounded w-full">
 <option>Enabled</option>
 <option>Disabled</option>
+</select>
+</div>
+<div class="card">
+<label class="block mb-2">Theme</label>
+<select class="border p-2 rounded w-full">
+<option>Light</option>
+<option>Dark</option>
 </select>
 </div>
 </section>
@@ -333,34 +252,25 @@
 </div>
 
 <script>
-function openTab(id){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-
-  document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('active'));
+function openTab(id,el){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('active'));
+el.classList.add('active');
 }
 
-function toggleSidebar(){ sidebar.classList.toggle('active') }
-function toggleProfile(){ profileMenu.classList.toggle('active') }
-
-function logout(){
-  localStorage.clear();
-  sessionStorage.clear();
-  window.location.href = "login.html";
-}
-
-// close dropdown on outside click
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.relative')) profileMenu.classList.remove('active');
+new Chart(lineChart,{
+type:'line',
+data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+datasets:[{data:[22,35,48,60,72,85,96],borderColor:'#4f46e5'}]},
+options:{plugins:{legend:{display:false}}}
 });
 
-new Chart(document.getElementById("chart"),{
-type:"line",
-data:{
-labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-datasets:[{data:[10,18,26,32,40,55,70],borderColor:"#4f46e5",fill:true}]
-},
-options:{plugins:{legend:{display:false}}}
+new Chart(pieChart,{
+type:'doughnut',
+data:{labels:['React','Backend','UI/UX','DevOps'],
+datasets:[{data:[35,30,20,15],
+backgroundColor:['#4f46e5','#22c55e','#f59e0b','#ef4444']}]}
 });
 </script>
 
