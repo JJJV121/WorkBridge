@@ -6,260 +6,326 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+/* ---------- CORE ---------- */
 .sidebar{transform:translateX(-100%);transition:.25s}
 .sidebar.active{transform:translateX(0)}
 @media(min-width:768px){.sidebar{transform:translateX(0)}}
 .tab{display:none}
 .tab.active{display:block}
+
+/* ---------- CARDS ---------- */
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 12px 35px rgba(0,0,0,.08);
+  transition:.25s;
+}
+.card:hover{transform:translateY(-3px)}
+
+/* ---------- BADGES ---------- */
+.badge{
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+}
+.blue{background:#e0e7ff;color:#3730a3}
+.green{background:#dcfce7;color:#166534}
+.yellow{background:#fef9c3;color:#854d0e}
+.red{background:#fee2e2;color:#991b1b}
+
+/* ---------- SIDEBAR ---------- */
+.side-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+.side-item:hover{background:#eef2ff}
+.side-item.active{
+  background:#e0e7ff;
+  font-weight:600;
+}
+
+/* ---------- PROFILE DROPDOWN ---------- */
+.dropdown{
+  position:absolute;
+  right:0;
+  top:110%;
+  width:180px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 20px 50px rgba(0,0,0,.2);
+  display:none;
+}
+.dropdown.active{display:block}
+.dropdown a{
+  display:block;
+  padding:10px 14px;
+  cursor:pointer;
+}
+.dropdown a:hover{background:#f1f5f9}
 </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-slate-100 text-slate-800">
 
-<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 <header class="bg-white shadow sticky top-0 z-50">
   <div class="h-16 px-6 flex justify-between items-center">
+
     <div class="flex items-center gap-3">
-      <button onclick="toggleSidebar()" class="md:hidden"><i class="fas fa-bars"></i></button>
-      <i class="fas fa-briefcase text-indigo-600"></i>
-      <span class="font-bold text-lg">WorkBridge</span>
+      <button onclick="toggleSidebar()" class="md:hidden">☰</button>
+      <span class="text-indigo-600 text-xl">💼</span>
+      <span class="font-bold text-lg">WorkBridge Recruiter</span>
     </div>
 
-    <div class="flex items-center gap-4">
-      <button onclick="showTab('notifications')" class="relative">
-        <i class="fas fa-bell"></i>
-        <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1 rounded-full">3</span>
+    <!-- PROFILE -->
+    <div class="relative">
+      <button onclick="toggleProfile()" class="flex items-center gap-2">
+        <img src="https://picsum.photos/36" class="rounded-full">
+        <span class="text-sm font-medium">Alex</span>
+        <span>▾</span>
       </button>
-      <img src="https://picsum.photos/40" class="rounded-full">
+
+      <div id="profileMenu" class="dropdown">
+        <a onclick="openTab('profile')">👤 Profile</a>
+        <a onclick="openTab('settings')">⚙ Settings</a>
+        <a onclick="logout()" class="text-red-600">🚪 Logout</a>
+      </div>
     </div>
+
   </div>
 </header>
 
 <div class="flex">
 
-<!-- SIDEBAR -->
-<aside id="sidebar" class="sidebar fixed md:relative w-64 bg-white shadow h-screen">
-<nav class="p-4 space-y-2 text-sm">
-<a onclick="showTab('overview')" class="block px-4 py-3 rounded bg-indigo-50 text-indigo-700"><i class="fas fa-chart-pie mr-2"></i>Overview</a>
-<a onclick="showTab('postjob')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-plus mr-2"></i>Post Job</a>
-<a onclick="showTab('pipeline')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-stream mr-2"></i>Hiring Pipeline</a>
-<a onclick="showTab('talent')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-search mr-2"></i>Search Talent</a>
-<a onclick="showTab('saved')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-bookmark mr-2"></i>Saved Freelancers</a>
-<a onclick="showTab('contracts')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-file-contract mr-2"></i>Contracts & Work</a>
-<a onclick="showTab('timesheets')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-clock mr-2"></i>Timesheets</a>
-<a onclick="showTab('interviews')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-video mr-2"></i>Interviews</a>
-<a onclick="showTab('reports')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-chart-bar mr-2"></i>Reports</a>
-<a onclick="showTab('messages')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-envelope mr-2"></i>Messages</a>
-<a onclick="showTab('billing')" class="block px-4 py-3 rounded hover:bg-gray-100"><i class="fas fa-credit-card mr-2"></i>Billing</a>
+<!-- ================= SIDEBAR ================= -->
+<aside id="sidebar"
+ class="sidebar fixed md:relative w-64 bg-white shadow h-screen overflow-y-auto pb-24">
+<nav class="p-4 space-y-1 text-sm">
+
+<div class="side-item active" onclick="openTab('overview')">
+  <span>📊 Overview</span><span class="badge blue">Live</span>
+</div>
+
+<div class="side-item" onclick="openTab('postjob')">
+  <span>📝 Post Job</span><span class="badge green">New</span>
+</div>
+
+<div class="side-item" onclick="openTab('pipeline')">
+  <span>🔁 Pipeline</span><span class="badge blue">148</span>
+</div>
+
+<div class="side-item" onclick="openTab('applications')">
+  <span>📂 Applications</span><span class="badge yellow">42</span>
+</div>
+
+<div class="side-item" onclick="openTab('talent')">
+  <span>🔍 Talent</span><span class="badge green">AI</span>
+</div>
+
+<div class="side-item" onclick="openTab('saved')">
+  <span>⭐ Saved</span><span class="badge blue">5</span>
+</div>
+
+<div class="side-item" onclick="openTab('contracts')">
+  <span>📑 Contracts</span><span class="badge green">3</span>
+</div>
+
+<div class="side-item" onclick="openTab('timesheets')">
+  <span>⏱ Timesheets</span><span class="badge yellow">12</span>
+</div>
+
+<div class="side-item" onclick="openTab('interviews')">
+  <span>🎥 Interviews</span><span class="badge blue">4</span>
+</div>
+
+<div class="side-item" onclick="openTab('reports')">
+  <span>📈 Reports</span><span class="badge blue">Stats</span>
+</div>
+
+<div class="side-item" onclick="openTab('billing')">
+  <span>💳 Billing</span><span class="badge red">₹30k</span>
+</div>
+
 </nav>
 </aside>
 
-<!-- MAIN -->
-<main class="flex-1 p-6 md:ml-64">
+<!-- ================= MAIN ================= -->
+<main class="flex-1 p-6 md:ml-64 space-y-12">
 
-<!-- OVERVIEW -->
+<!-- ================= OVERVIEW ================= -->
 <section id="overview" class="tab active">
-<h1 class="text-2xl font-bold mb-6">Overview</h1>
+<h1 class="text-2xl font-bold mb-6">📊 Overview</h1>
 
-<div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
-<div class="bg-white p-4 rounded shadow">Jobs<p id="totalJobs" class="text-2xl font-bold">0</p></div>
-<div class="bg-white p-4 rounded shadow">Applicants<p id="totalApplicants" class="text-2xl font-bold">0</p></div>
-<div class="bg-white p-4 rounded shadow">Shortlisted<p id="totalShortlisted" class="text-2xl font-bold">0</p></div>
-<div class="bg-white p-4 rounded shadow">Interviews<p id="totalInterviews" class="text-2xl font-bold">0</p></div>
-<div class="bg-white p-4 rounded shadow">Hired<p id="totalHired" class="text-2xl font-bold">0</p></div>
-<div class="bg-white p-4 rounded shadow">Avg Hire Time <p class="text-2xl font-bold">8d</p></div>
+<div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+<div class="card">Jobs<p class="text-3xl font-bold">12</p></div>
+<div class="card">Applicants<p class="text-3xl font-bold">148</p></div>
+<div class="card">Shortlisted<p class="text-3xl font-bold">42</p></div>
+<div class="card">Interviews<p class="text-3xl font-bold">21</p></div>
+<div class="card">Hired<p class="text-3xl font-bold">9</p></div>
+<div class="card">Avg Hire<p class="text-3xl font-bold">8d</p></div>
 </div>
 
-<div class="bg-white p-6 rounded shadow">
-<canvas id="applicationsChart" height="120"></canvas>
+<div class="card mt-6">
+<canvas id="chart"></canvas>
 </div>
 </section>
 
-<!-- POST JOB (EXTENDED) -->
+<!-- ================= POST JOB ================= -->
 <section id="postjob" class="tab">
-<h1 class="text-2xl font-bold mb-6">Post a Job</h1>
-
-<div class="bg-white p-6 rounded shadow grid md:grid-cols-2 gap-4">
-  <input id="jobTitle" class="border p-2 rounded" placeholder="Job Title">
-  <input id="skills" class="border p-2 rounded" placeholder="Required Skills">
-
-  <select id="jobType" class="border p-2 rounded">
-    <option value="Short Term">Short Term</option>
-    <option value="Long Term">Long Term</option>
-  </select>
-
-  <select id="experience" class="border p-2 rounded">
-    <option>Fresher</option>
-    <option>Experienced</option>
-  </select>
-
-  <select id="paymentType" class="border p-2 rounded">
-    <option>Hourly</option>
-    <option>Fixed</option>
-  </select>
-
-  <input id="budget" class="border p-2 rounded" placeholder="Budget / Hourly Rate">
-
-  <select id="workMode" class="border p-2 rounded">
-    <option>Remote</option>
-    <option>Hybrid</option>
-  </select>
-
-  <textarea id="desc" class="md:col-span-2 border p-2 rounded"
-    placeholder="Job Description"></textarea>
-
-  <button onclick="postJob()"
-    class="md:col-span-2 bg-indigo-600 text-white py-3 rounded">
-    Publish Job
-  </button>
+<h1 class="text-2xl font-bold mb-6">📝 Post Job</h1>
+<div class="card grid md:grid-cols-2 gap-4">
+<input class="border p-2 rounded" placeholder="Job Title">
+<input class="border p-2 rounded" placeholder="Skills">
+<select class="border p-2 rounded"><option>Remote</option><option>Hybrid</option></select>
+<select class="border p-2 rounded"><option>Full Time</option><option>Contract</option></select>
+<textarea class="md:col-span-2 border p-2 rounded" placeholder="Job description"></textarea>
+<button class="md:col-span-2 bg-indigo-600 text-white py-3 rounded">Publish Job</button>
 </div>
 </section>
 
-<!-- HIRING PIPELINE -->
+<!-- ================= PIPELINE ================= -->
 <section id="pipeline" class="tab">
-<h1 class="text-2xl font-bold mb-6">Hiring Pipeline</h1>
-
+<h1 class="text-2xl font-bold mb-6">🔁 Hiring Pipeline</h1>
 <div class="grid md:grid-cols-5 gap-4">
-  <div class="bg-white p-4 rounded shadow">
-    <h3 class="font-bold">Applied</h3>
-    <p id="appliedCount">0 Candidates</p>
-  </div>
-  <div class="bg-white p-4 rounded shadow">
-    <h3 class="font-bold">Shortlisted</h3>
-    <p id="shortlistedCount">0 Candidates</p>
-  </div>
-  <div class="bg-white p-4 rounded shadow">
-    <h3 class="font-bold">Interview</h3>
-    <p id="interviewCount">0 Candidates</p>
-  </div>
-  <div class="bg-white p-4 rounded shadow">
-    <h3 class="font-bold">Accepted</h3>
-    <p id="hiredCount">0 Candidates</p>
-  </div>
-  <div class="bg-white p-4 rounded shadow">
-    <h3 class="font-bold">Rejected</h3>
-    <p id="rejectedCount">0 Candidates</p>
-  </div>
+<div class="card">Applied<p class="text-xl">148</p></div>
+<div class="card">Shortlisted<p class="text-xl">42</p></div>
+<div class="card">Interview<p class="text-xl">21</p></div>
+<div class="card">Offer<p class="text-xl">12</p></div>
+<div class="card">Hired<p class="text-xl">9</p></div>
 </div>
 </section>
 
-
-<!-- SEARCH TALENT -->
-<section id="talent" class="tab">
-<h1 class="text-2xl font-bold mb-6">Search Talent</h1>
-<div class="bg-white p-6 rounded shadow mb-4 grid md:grid-cols-4 gap-3">
-<input class="border p-2 rounded" placeholder="Skill">
-<input class="border p-2 rounded" placeholder="Experience">
-<input class="border p-2 rounded" placeholder="Location">
-<button class="bg-indigo-600 text-white rounded">Search</button>
-</div>
-
-<div class="bg-white rounded shadow divide-y">
-<div class="p-4 flex justify-between">
-<div><b>Sarah Johnson</b><p class="text-sm">Frontend • ₹900/hr</p></div>
-<div class="space-x-2">
-<button class="border px-3 py-1 rounded">Save</button>
-<button class="bg-green-600 text-white px-3 py-1 rounded">Direct Contract</button>
-</div>
-</div>
-</div>
-</section>
-
-<!-- SAVED FREELANCERS -->
-<section id="saved" class="tab">
-<h1 class="text-2xl font-bold mb-6">Saved Freelancers</h1>
-<div class="bg-white p-4 rounded shadow">
-<p><b>Mike Chen</b> — UI/UX Designer</p>
-<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Invite to Job</button>
-</div>
-</section>
-
-<!-- CONTRACTS -->
-<section id="contracts" class="tab">
-<h1 class="text-2xl font-bold mb-6">Contracts & Work</h1>
-<div class="bg-white p-6 rounded shadow">
-<p><b>Frontend Website</b></p>
-<p>Status: Active</p>
-<p>Payment: Hourly</p>
-</div>
-</section>
-
-<!-- TIMESHEETS -->
-<section id="timesheets" class="tab">
-<h1 class="text-2xl font-bold mb-6">Timesheets</h1>
-<div class="bg-white p-6 rounded shadow">
-<p>Sarah — 32 hrs this week</p>
-<p>Mike — 18 hrs this week</p>
-</div>
-</section>
-
-<!-- INTERVIEWS -->
-<section id="interviews" class="tab">
-<h1 class="text-2xl font-bold mb-6">Interviews</h1>
-<div class="bg-white p-6 rounded shadow">
-<p>Sarah — 12 Oct, 4:00 PM (Video)</p>
-<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Join Call</button>
-</div>
-</section>
-
-<!-- REPORTS -->
-<section id="reports" class="tab">
-<h1 class="text-2xl font-bold mb-6">Reports</h1>
-<div class="bg-white p-6 rounded shadow">
-<p>Total Paid: ₹1,80,000</p>
-<p>Pending Payments: ₹30,000</p>
-<p>Top Hiring Category: Development</p>
-</div>
-</section>
-
-<!-- MESSAGES -->
-<section id="messages" class="tab">
-<h1 class="text-2xl font-bold mb-6">Messages</h1>
-<div class="bg-white p-6 rounded shadow">
-<p><b>Sarah:</b> Can we extend timeline?</p>
-<input class="border p-2 w-full mt-2 rounded" placeholder="Reply...">
-</div>
-</section>
-
-<!-- BILLING -->
-<section id="billing" class="tab">
-<h1 class="text-2xl font-bold mb-6">Billing</h1>
-<div class="bg-white p-6 rounded shadow">
-<p>Plan: Pro</p>
-<p>Next Billing: 12 Oct 2025</p>
-<button class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded">Upgrade</button>
-</div>
-</section>
-
+<!-- ================= APPLICATIONS ================= -->
 <section id="applications" class="tab">
-<h1 class="text-2xl font-bold mb-6">Applications</h1>
-
-<div class="bg-white rounded shadow overflow-x-auto">
+<h1 class="text-2xl font-bold mb-6">📂 Applications</h1>
+<div class="card overflow-x-auto">
 <table class="w-full text-sm">
-<thead class="bg-gray-100">
-<tr>
-  <th class="p-3">Freelancer</th>
-  <th>Job</th>
-  <th>Status</th>
-  <th>Action</th>
+<tr class="bg-slate-100">
+<th class="p-3">Candidate</th><th>Role</th><th>Status</th><th>Action</th>
 </tr>
-</thead>
-<tbody id="appList"></tbody>
+<tr>
+<td class="p-3">Sarah Johnson</td>
+<td>Frontend</td>
+<td><span class="badge blue">Applied</span></td>
+<td>
+<button class="text-green-600">Shortlist</button>
+<button class="text-red-600 ml-2">Reject</button>
+</td>
+</tr>
+<tr>
+<td class="p-3">Mike Chen</td>
+<td>UI/UX</td>
+<td><span class="badge green">Interview</span></td>
+<td><button class="text-indigo-600">Schedule</button></td>
+</tr>
 </table>
 </div>
 </section>
 
-<!-- NOTIFICATIONS -->
-<section id="notifications" class="tab">
-<h1 class="text-2xl font-bold mb-6">Notifications</h1>
-<div id="notifList" class="bg-white p-6 rounded shadow space-y-2">
-<p>🔔 New applicant for Frontend role</p>
-<p>🔔 Interview scheduled with Mike</p>
-<p>🔔 Payment released</p>
+<!-- ================= TALENT ================= -->
+<section id="talent" class="tab">
+<h1 class="text-2xl font-bold mb-6">🔍 Talent Pool</h1>
+<div class="grid md:grid-cols-2 gap-4">
+<div class="card">
+<p class="font-bold">👩‍💻 Sarah Johnson</p>
+<p>Frontend • 6 yrs • ₹900/hr</p>
+<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Invite</button>
+</div>
+<div class="card">
+<p class="font-bold">👨‍💻 Mike Chen</p>
+<p>UI/UX • 5 yrs • ₹850/hr</p>
+<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Invite</button>
+</div>
+</div>
+</section>
+
+<!-- ================= SAVED ================= -->
+<section id="saved" class="tab">
+<h1 class="text-2xl font-bold mb-6">⭐ Saved Freelancers</h1>
+<div class="card">
+<p>Sarah Johnson — Frontend</p>
+<p>Mike Chen — UI/UX</p>
+</div>
+</section>
+
+<!-- ================= CONTRACTS ================= -->
+<section id="contracts" class="tab">
+<h1 class="text-2xl font-bold mb-6">📑 Contracts</h1>
+<div class="grid md:grid-cols-3 gap-4">
+<div class="card"><b>Frontend Website</b><p>Status: <span class="badge green">Active</span></p></div>
+<div class="card"><b>UI Redesign</b><p>Status: <span class="badge yellow">On Hold</span></p></div>
+<div class="card"><b>Backend API</b><p>Status: <span class="badge blue">Completed</span></p></div>
+</div>
+</section>
+
+<!-- ================= TIMESHEETS ================= -->
+<section id="timesheets" class="tab">
+<h1 class="text-2xl font-bold mb-6">⏱ Timesheets</h1>
+<div class="card">
+<p>Sarah — 32 hrs <span class="badge green">Approved</span></p>
+<p>Mike — 18 hrs <span class="badge yellow">Pending</span></p>
+</div>
+</section>
+
+<!-- ================= INTERVIEWS ================= -->
+<section id="interviews" class="tab">
+<h1 class="text-2xl font-bold mb-6">🎥 Interviews</h1>
+<div class="card">
+<p>Sarah — Oct 12, 4:00 PM</p>
+<button class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded">Join Call</button>
+</div>
+</section>
+
+<!-- ================= REPORTS ================= -->
+<section id="reports" class="tab">
+<h1 class="text-2xl font-bold mb-6">📈 Reports</h1>
+<div class="grid md:grid-cols-3 gap-4">
+<div class="card">Total Spend<p class="text-xl font-bold">₹1.8L</p></div>
+<div class="card">Cost / Hire<p class="text-xl font-bold">₹20k</p></div>
+<div class="card">Top Skill<p class="text-xl font-bold">React</p></div>
+</div>
+</section>
+
+<!-- ================= BILLING ================= -->
+<section id="billing" class="tab">
+<h1 class="text-2xl font-bold mb-6">💳 Billing</h1>
+<div class="grid md:grid-cols-3 gap-4">
+<div class="card">Plan<p class="text-xl font-bold">Pro</p></div>
+<div class="card">Pending<p class="text-xl font-bold">₹30,000</p></div>
+<div class="card">Next Billing<p class="text-xl font-bold">12 Oct</p></div>
+</div>
+<button class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded">Pay Invoice</button>
+</section>
+
+<!-- ================= PROFILE ================= -->
+<section id="profile" class="tab">
+<h1 class="text-2xl font-bold mb-6">👤 Profile</h1>
+<div class="card">
+<p><b>Name:</b> Alex Johnson</p>
+<p><b>Email:</b> alex@workbridge.com</p>
+<p><b>Role:</b> Recruiter</p>
+</div>
+</section>
+
+<!-- ================= SETTINGS ================= -->
+<section id="settings" class="tab">
+<h1 class="text-2xl font-bold mb-6">⚙ Settings</h1>
+<div class="card">
+<label class="block mb-2">Notifications</label>
+<select class="border p-2 rounded w-full">
+<option>Enabled</option>
+<option>Disabled</option>
+</select>
 </div>
 </section>
 
@@ -267,106 +333,36 @@
 </div>
 
 <script>
-function showTab(id){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
-  document.getElementById(id).classList.add('active')
+function openTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('active'));
 }
 
 function toggleSidebar(){ sidebar.classList.toggle('active') }
+function toggleProfile(){ profileMenu.classList.toggle('active') }
 
-/* ---------- OVERVIEW ---------- */
-function loadOverview(){
- fetch('recruiter_stats.php')
-  .then(r=>r.json())
-  .then(d=>{
-    totalJobs.innerText=d.jobs;
-    totalApplicants.innerText=d.applications;
-  });
+function logout(){
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location.href = "login.html";
 }
 
-/* ---------- POST JOB ---------- */
-function postJob(){
- let f=new FormData();
- f.append("title",jobTitle.value);
- f.append("description",desc.value);
- f.append("budget",budget.value);
- f.append("job_type",jobType.value);
+// close dropdown on outside click
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.relative')) profileMenu.classList.remove('active');
+});
 
- fetch("post_job.php",{method:"POST",body:f})
- .then(r=>r.json())
- .then(()=>{
-   alert("Job Posted Successfully");
-   loadOverview();
-   loadPipeline();
- });
-}
-
-/* ---------- PIPELINE ---------- */
-function loadPipeline(){
- fetch("backend/applications/pipeline.php")
-  .then(r=>r.json())
-  .then(d=>{
-    appliedCount.innerText=d.applied+" Candidates";
-    shortlistedCount.innerText=d.shortlisted+" Candidates";
-    interviewCount.innerText=d.interview+" Candidates";
-    hiredCount.innerText=d.hired+" Candidates";
-    rejectedCount.innerText=d.rejected+" Candidates";
-  });
-}
-
-/* ---------- APPLICATIONS ---------- */
-function loadApplications(){
- fetch("get_applicants.php")
-  .then(r=>r.json())
-  .then(data=>{
-    appList.innerHTML="";
-    data.forEach(a=>{
-      appList.innerHTML+=`
-      <tr class="border-b">
-        <td class="p-3">${a.name}</td>
-        <td>${a.title}</td>
-        <td>${a.status}</td>
-        <td>
-          <button onclick="updateStatus(${a.application_id},'Accepted')"
-           class="text-green-600">Accept</button>
-          <button onclick="updateStatus(${a.application_id},'Rejected')"
-           class="text-red-600 ml-2">Reject</button>
-        </td>
-      </tr>`;
-    });
-  });
-}
-
-function updateStatus(id,status){
- let f=new FormData();
- f.append("application_id",id);
- f.append("status",status);
- fetch("update_application_status.php",{method:"POST",body:f})
-  .then(()=>{ loadApplications(); loadPipeline(); });
-}
-
-/* ---------- NOTIFICATIONS ---------- */
-function loadNotifications(){
- fetch("get_notifications.php")
-  .then(r=>r.json())
-  .then(data=>{
-    notifList.innerHTML="";
-    data.forEach(n=>{
-      notifList.innerHTML+=`<p>🔔 ${n.message}</p>`;
-    });
-  });
-}
-
-/* INIT */
-loadOverview();
-loadPipeline();
-loadApplications();
-loadNotifications();
-
-setInterval(loadPipeline,5000);
-setInterval(loadNotifications,5000);
+new Chart(document.getElementById("chart"),{
+type:"line",
+data:{
+labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+datasets:[{data:[10,18,26,32,40,55,70],borderColor:"#4f46e5",fill:true}]
+},
+options:{plugins:{legend:{display:false}}}
+});
 </script>
-
 
 </body>
 </html>

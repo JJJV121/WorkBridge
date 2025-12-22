@@ -1,58 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WorkBridge — Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Login — WorkBridge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/login.css">
-</head>
+<script src="https://cdn.tailwindcss.com"></script>
 
-<body>
-
-<div class="auth-container">
-  <form class="auth-card" onsubmit="handleLogin(event)">
-    <h1>Welcome back</h1>
-    <p class="subtitle">Log in to your account</p>
-
-    <input id="email" required type="email" placeholder="Email">
-    <input id="password" required type="password" placeholder="Password">
-
-    <button class="primary-btn">Login</button>
-
-    <p class="bottom-text">
-      Don’t have an account?
-      <a href="register.html">Sign up</a>
-    </p>
-  </form>
-</div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script>
-function handleLogin(e) {
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+      colors: { accent: '#6366f1' }
+    }
+  }
+}
+</script>
+</head>
+
+<body class="bg-slate-50 font-sans text-slate-900">
+
+<!-- HEADER -->
+<header class="bg-white border-b">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center gap-2">
+    <div class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold">
+      W
+    </div>
+    <span class="font-semibold text-lg">WorkBridge</span>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<section class="min-h-[calc(100vh-72px)] flex items-center justify-center px-6">
+  <div class="w-full max-w-lg bg-white rounded-2xl p-8
+              shadow-[0_20px_60px_rgba(15,23,42,0.12)]">
+
+    <h1 class="text-2xl font-semibold text-center">
+      Welcome back
+    </h1>
+    <p class="text-sm text-slate-500 text-center mb-6">
+      Log in to your WorkBridge account
+    </p>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" class="space-y-4">
+
+      <input type="email" name="email" required
+        placeholder="Email"
+        class="w-full border rounded-lg px-3 py-2.5
+               focus:ring-2 focus:ring-accent">
+
+      <input type="password" name="password" required
+        placeholder="Password"
+        class="w-full border rounded-lg px-3 py-2.5
+               focus:ring-2 focus:ring-accent">
+
+      <button type="submit"
+        class="w-full bg-accent text-white py-3 rounded-lg
+               font-medium shadow hover:shadow-lg transition">
+        Login
+      </button>
+    </form>
+
+    <!-- ERROR -->
+    <p id="errorMsg" class="hidden text-sm text-red-600 text-center mt-4">
+      Invalid email or password
+    </p>
+
+    <p class="text-sm text-center text-slate-500 mt-6">
+      Don’t have an account?
+      <a href="register.html" class="text-accent font-medium hover:underline">
+        Create one
+      </a>
+    </p>
+
+  </div>
+</section>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const fd = new FormData();
-  fd.append("email", document.getElementById("email").value);
-  fd.append("password", document.getElementById("password").value);
+  const form = e.target;
+  const fd = new FormData(form);
 
-  fetch("backend/login.php", {
-    method: "POST",
+  const res = await fetch('backend/login.php', {
+    method: 'POST',
     body: fd
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      window.location =
-        data.role === "freelancer"
-          ? "freelancer-dashboard.html"
-          : "recruiter-dashboard.html";
-    } else {
-      alert(data.error);
-    }
-  })
-  .catch(() => alert("Server error"));
-}
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    document.getElementById('errorMsg').classList.remove('hidden');
+    return;
+  }
+
+  // ROLE BASED REDIRECT
+  if (data.role === 'recruiter') {
+    window.location.href = 'recruiter-dashboard.html';
+  } else {
+    window.location.href = 'freelancer-dashboard.html';
+  }
+});
 </script>
 
 </body>
