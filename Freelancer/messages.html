@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>WorkBridge — Contracts</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            ink: '#0f172a',
+            muted: '#475569',
+            bgsoft: '#f8fafc',
+            accent: '#6366f1'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+<!-- Header -->
+<!-- Header with Dashboard Link -->
+<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+  
+  <!-- Logo & Site Name on the left -->
+  <div class="flex items-center gap-2">
+    <div
+      class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold
+             shadow-[0_6px_20px_rgba(99,102,241,0.45)]">
+      W
+    </div>
+    <span class="font-semibold text-lg text-gray-900">WorkBridge</span>
+  </div>
+
+  <!-- Dashboard link on the right -->
+  <a href="index.html" 
+     class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg
+            shadow hover:bg-indigo-700 transition font-semibold">
+    <i class="fas fa-home"></i> Dashboard
+  </a>
+</div>
+
+
+<main class="container mt-8 space-y-6">
+
+  <h1 class="text-3xl font-bold text-indigo-600">Messages</h1>
+  <p class="text-slate-600">Communicate with your clients.</p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Conversation List -->
+    <div class="card p-4 space-y-3">
+      <h3 class="font-semibold mb-2 text-indigo-600">Conversations</h3>
+
+      <div class="p-3 rounded bg-indigo-50 cursor-pointer">
+        <b>TechCorp</b>
+        <p class="text-sm text-slate-600">Milestone discussion</p>
+      </div>
+
+      <div class="p-3 rounded hover:bg-slate-50 cursor-pointer">
+        <b>DesignStudio</b>
+        <p class="text-sm text-slate-600">Wireframes update</p>
+      </div>
+    </div>
+
+    <!-- Chat Box -->
+    <div class="md:col-span-2 card p-4 flex flex-col">
+
+      <h3 class="font-semibold mb-3">Client – TechCorp</h3>
+
+      <div id="chatBox" class="flex-1 space-y-3 overflow-y-auto mb-3">
+        <!-- messages injected here -->
+      </div>
+
+      <div class="flex gap-2">
+        <input
+          id="messageInput"
+          class="input flex-1"
+          placeholder="Type your message..."
+        />
+        <button class="btn-primary px-4 rounded">Send</button>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script src="js/messages.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>WorkBridge — Freelancer Dashboard</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="css/styles.css"/>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+          colors: {
+            ink: '#0f172a',
+            muted: '#475569',
+            bgsoft: '#f8fafc',
+            accent: '#6366f1'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bgsoft text-ink font-sans">
+
+<!-- HEADER -->
+<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between bg-white shadow-md rounded-b-xl">
+  <div class="flex items-center gap-2">
+    <div class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold shadow-[0_6px_20px_rgba(99,102,241,0.45)]">W</div>
+    <span class="font-semibold text-lg text-ink">WorkBridge</span>
+  </div>
+</div>
+
+<div class="flex">
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-white shadow h-screen p-4">
+    <nav class="space-y-2">
+      <button onclick="showTab('overview')" class="nav-btn">Overview</button>
+      <a href="jobs.html" class="nav-btn block">Find Jobs</a>
+      <a href="proposals.html" class="nav-btn block">Proposals</a>
+      <a href="contracts.html" class="nav-btn block">Contracts</a>
+      <a href="earnings.html" class="nav-btn block">Earnings</a>
+      <a href="messages.html" class="nav-btn block">Messages</a>
+      <a href="profile.html" class="nav-btn block">Profile</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 p-6 space-y-6">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="tab">
+
+      <!-- DASHBOARD HERO -->
+      <section class="dashboard-hero bg-white p-6 rounded-2xl shadow">
+        <h1 class="text-3xl font-semibold mb-4">Welcome back, John</h1>
+        <p class="text-muted mb-6">You’re outperforming 78% of freelancers this month.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div class="metric bg-indigo-50 p-4 rounded-lg text-center">
+            <h2 class="font-bold text-lg">$2,450</h2>
+            <p class="text-sm text-muted">This month</p>
+          </div>
+          <div class="metric bg-indigo-50 p-4 rounded-lg text-center">
+            <h2 class="font-bold text-lg">92%</h2>
+            <p class="text-sm text-muted">Success rate</p>
+          </div>
+          <div class="metric bg-indigo-50 p-4 rounded-lg text-center">
+            <h2 class="font-bold text-lg">4</h2>
+            <p class="text-sm text-muted">New invites</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIVE ACTIVITY -->
+      <div class="card mt-6 bg-white p-4 rounded-2xl shadow">
+        <h3 class="font-semibold mb-3 text-indigo-600">Live Activity</h3>
+        <div class="space-y-3 text-sm text-muted">
+          <p>💰 Payment of $450 released</p>
+          <p>📨 Client viewed your proposal</p>
+          <p>🎯 Ranked #3 for React Developer job</p>
+        </div>
+      </div>
+
+      <!-- STATS GRID -->
+      <div class="grid md:grid-cols-4 gap-4 mt-6">
+        <div class="stat-card bg-white p-4 rounded-2xl shadow text-center">Profile Strength <b>82%</b></div>
+        <div class="stat-card bg-white p-4 rounded-2xl shadow text-center">Success Rate <b>91%</b></div>
+        <div class="stat-card bg-white p-4 rounded-2xl shadow text-center">Active Contracts <b>3</b></div>
+        <div class="stat-card bg-white p-4 rounded-2xl shadow text-center">Total Earned <b>$12,450</b></div>
+      </div>
+
+      <!-- INTERACTIVE INSIGHTS CHARTS -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+
+        <!-- Proposals Sent vs Accepted -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h3 class="font-semibold mb-2 text-indigo-600">Proposals Sent vs Accepted</h3>
+          <canvas id="proposalsChart"></canvas>
+          <p class="text-slate-600 text-sm mt-2">Compare your sent proposals vs accepted offers.</p>
+        </div>
+
+        <!-- Active vs Completed Contracts -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h3 class="font-semibold mb-2 text-indigo-600">Active vs Completed Contracts</h3>
+          <canvas id="contractsChart"></canvas>
+          <p class="text-slate-600 text-sm mt-2">See the balance of ongoing vs finished contracts.</p>
+        </div>
+
+        <!-- Tasks Completed -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h3 class="font-semibold mb-2 text-indigo-600">Tasks Completed</h3>
+          <canvas id="tasksChart"></canvas>
+          <p class="text-slate-600 text-sm mt-2">Daily/weekly tasks completed for your projects.</p>
+        </div>
+
+        <!-- Weekly Activity -->
+        <div class="bg-white p-6 rounded-2xl shadow">
+          <h3 class="font-semibold mb-2 text-indigo-600">Weekly Activity</h3>
+          <canvas id="weeklyActivityChart"></canvas>
+          <p class="text-slate-600 text-sm mt-2">Track your activity and engagement each day.</p>
+        </div>
+
+        <!-- Client Interactions -->
+        <div class="bg-white p-6 rounded-2xl shadow md:col-span-2">
+          <h3 class="font-semibold mb-2 text-indigo-600">Client Interactions</h3>
+          <canvas id="clientsChart"></canvas>
+          <p class="text-slate-600 text-sm mt-2">Number of messages, milestones, and approvals from clients.</p>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<!-- Notifications Panel -->
+<div id="notifyPanel" class="fixed right-0 top-0 h-full w-80 bg-white shadow-xl transform translate-x-full transition duration-300 z-50">
+  <div class="p-4 border-b">
+    <h3 class="font-semibold">Notifications</h3>
+  </div>
+  <div class="p-4 space-y-3 text-sm text-muted">
+    <p>🔔 New job invite</p>
+    <p>💰 Withdrawal successful</p>
+    <p>📨 New message from client</p>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+// ---------- Non-Earnings Interactive Charts ----------
+
+// Proposals Sent vs Accepted
+new Chart(document.getElementById("proposalsChart"), {
+  type: "doughnut",
+  data: {
+    labels: ["Sent", "Accepted", "Rejected"],
+    datasets: [{ data: [40,15,10], backgroundColor:["#6366f1","#10b981","#ef4444"], hoverOffset: 20 }]
+  },
+  options: { responsive:true, plugins:{ legend:{position:"bottom"}, tooltip:{callbacks:{ label:ctx=>`${ctx.label}: ${ctx.raw}`}}}, animation:{animateRotate:true, animateScale:true} }
+});
+
+// Active vs Completed Contracts
+new Chart(document.getElementById("contractsChart"), {
+  type: "pie",
+  data: { labels:["Active","Completed"], datasets:[{ data:[3,7], backgroundColor:["#6366f1","#10b981"], hoverOffset:15 }] },
+  options:{ responsive:true, plugins:{ legend:{position:"bottom"} }, animation:{animateRotate:true, animateScale:true} }
+});
+
+// Tasks Completed (Horizontal Bar)
+new Chart(document.getElementById("tasksChart"), {
+  type:"bar",
+  data:{ labels:["Design","Development","Testing","Deployment"], datasets:[{ label:"Tasks Completed", data:[12,18,9,6], backgroundColor:["#6366f1","#facc15","#10b981","#ef4444"], borderRadius:6 }] },
+  options:{ indexAxis:"y", responsive:true, plugins:{ legend:{display:false}, tooltip:{callbacks:{ label:ctx=>`${ctx.label}: ${ctx.raw}`}}}, scales:{x:{beginAtZero:true}}, animation:{ duration:1000, easing:"easeOutQuart"} }
+});
+
+// Weekly Activity (Line)
+new Chart(document.getElementById("weeklyActivityChart"), {
+  type:"line",
+  data:{ labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"], datasets:[{ label:"Activities", data:[5,7,6,8,9,5,6], tension:0.3, borderColor:"#6366f1", backgroundColor:"rgba(99,102,241,0.2)", fill:true, pointRadius:5, pointHoverRadius:8, pointBackgroundColor:"#6366f1"}] },
+  options:{ responsive:true, plugins:{ legend:{position:"top"} }, scales:{ y:{ beginAtZero:true } }, animation:{ duration:1200, easing:"easeOutQuart" } }
+});
+
+// Client Interactions (Stacked Bar)
+new Chart(document.getElementById("clientsChart"), {
+  type:"bar",
+  data:{ labels:["Week 1","Week 2","Week 3","Week 4"], datasets:[ { label:"Messages", data:[20,25,18,30], backgroundColor:"#6366f1" }, { label:"Milestones", data:[2,3,1,2], backgroundColor:"#10b981" }, { label:"Approvals", data:[1,2,1,3], backgroundColor:"#facc15" } ] },
+  options:{ responsive:true, plugins:{ legend:{position:"top"} }, scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true } }, animation:{ duration:1200, easing:"easeOutQuart" } }
+});
+</script>
+
+</body>
+</html>
