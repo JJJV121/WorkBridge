@@ -102,11 +102,16 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   }
 
   // ROLE BASED REDIRECT
+showToast("✅ Login successful", "success");
+
+setTimeout(() => {
   if (data.role === 'recruiter') {
     window.location.href = 'recruiter-dashboard.html';
   } else {
     window.location.href = 'Freelancer/index.html';
   }
+}, 1500);
+
 });
 </script>
 
