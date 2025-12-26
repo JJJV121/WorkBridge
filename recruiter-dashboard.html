@@ -250,16 +250,16 @@ button:active {
   <div class="card">
     <h3 class="font-semibold mb-3">⚡ Quick Actions</h3>
     <div class="grid grid-cols-2 gap-3">
-      <button class="action-btn bg-blue-700 text-white p-3 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+      <button onclick="showToast('New Job Posted✅','success')" class="bg-blue-700 text-white p-3 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
         📝 Post New Job
       </button>
-      <button class="action-btn bg-green-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
+      <button onclick="showToast('Reviewed successfully ✅','success')" class="bg-green-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
         👥 Review Candidates
       </button>
-      <button class="action-btn bg-purple-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+      <button onclick="showToast('Interview scheduled ✅','success')" class="bg-purple-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
         🎥 Schedule Interview
       </button>
-      <button class="action-btn bg-yellow-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
+      <button onclick="showToast('Reports viewed ✅','success')" class="bg-yellow-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
         📊 View Reports
       </button>
     </div>
@@ -323,28 +323,28 @@ button:active {
     Frontend • React<br>
     ₹900/hr<br>
     <span class="badge green">Available</span><br>
-    <button class="action-btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+    <button onclick="showToast('Hired ✅','success')" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
   </div>
   <div class="card">
     <b>Anita Rao</b><br>
     Backend • Java<br>
     ₹800/hr<br>
     <span class="badge yellow">Busy</span><br>
-    <button class="action-btn mt-2 bg-gray-500 text-white px-4 py-2 rounded" disabled>Contact Later</button>
+    <button class="mt-2 bg-gray-500 text-white px-4 py-2 rounded" disabled>Contact Later</button>
   </div>
   <div class="card">
     <b>Mike Chen</b><br>
     UI/UX • Figma<br>
     ₹850/hr<br>
     <span class="badge green">Available</span><br>
-    <button class="action-btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+    <button onclick="showToast('Hired ✅','success')" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
   </div>
   <div class="card">
     <b>Rahul Sharma</b><br>
     Full Stack • MERN<br>
     ₹950/hr<br>
     <span class="badge green">Available</span><br>
-    <button class="action-btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+    <button onclick="showToast('Hired ✅','success')" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
   </div>
   <div class="card">
     <b>Emily Davis</b><br>
@@ -358,7 +358,7 @@ button:active {
     DevOps • AWS<br>
     ₹900/hr<br>
     <span class="badge green">Available</span><br>
-    <button class="action-btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
+    <button onclick="showToast('Hired ✅','success')" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded">Hire</button>
   </div>
 </div>
 </section>
@@ -395,7 +395,7 @@ button:active {
         <td class="px-6 py-4 text-gray-900">Oct 10, 2023</td>
         <td class="px-6 py-4"><span class="badge blue">Applied</span></td>
         <td class="px-6 py-4 text-center">
-          <button class="action-btn bg-green-600 text-white px-3 py-1 rounded text-xs mr-1">Shortlist</button>
+          <button onclick="showToast('shortlisted ✅','success')" class="bg-green-600 text-white px-3 py-1 rounded text-xs mr-1">Shortlist</button>
           <button class="action-btn bg-gray-600 text-white px-3 py-1 rounded text-xs">View</button>
         </td>
       </tr>
@@ -432,7 +432,7 @@ button:active {
         <td class="px-6 py-4 text-gray-900">Oct 12, 2023</td>
         <td class="px-6 py-4"><span class="badge blue">Applied</span></td>
         <td class="px-6 py-4 text-center">
-          <button class="action-btn bg-green-600 text-white px-3 py-1 rounded text-xs mr-1">Shortlist</button>
+          <button onclick="showToast('Shortlisted ✅','success')" class="bg-green-600 text-white px-3 py-1 rounded text-xs mr-1">Shortlist</button>
           <button class="action-btn bg-gray-600 text-white px-3 py-1 rounded text-xs">View</button>
         </td>
       </tr>
@@ -451,7 +451,7 @@ button:active {
         <td class="px-6 py-4 text-gray-900">Oct 9, 2023</td>
         <td class="px-6 py-4"><span class="badge green">Shortlisted</span></td>
         <td class="px-6 py-4 text-center">
-          <button class="action-btn bg-indigo-600 text-white px-3 py-1 rounded text-xs">Schedule Interview</button>
+          <button onclick="showToast('Interview Scheduled ✅','success')" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">Schedule Interview</button>
         </td>
       </tr>
       <tr class="hover:bg-gray-50">
@@ -534,13 +534,13 @@ button:active {
         <div class="font-medium text-sm">Rahul Sharma</div>
         <div class="text-xs text-gray-600">Full Stack Developer</div>
         <div class="text-xs text-gray-500">Shortlisted 2 days ago</div>
-        <button class="mt-1 bg-yellow-600 text-white text-xs px-2 py-1 rounded">Review</button>
+        <button onclick="showToast('Reviewed ✅','success')" class="mt-1 bg-yellow-600 text-white text-xs px-2 py-1 rounded">Review</button>
       </div>
       <div class="bg-white p-2 rounded shadow-sm">
         <div class="font-medium text-sm">Emily Davis</div>
         <div class="text-xs text-gray-600">Data Scientist</div>
         <div class="text-xs text-gray-500">Shortlisted 1 day ago</div>
-        <button class="action-btn mt-1 bg-yellow-600 text-white text-xs px-2 py-1 rounded">Review</button>
+        <button onclick="showToast('Reviewed ✅','success')" class="action-btn mt-1 bg-yellow-600 text-white text-xs px-2 py-1 rounded">Review</button>
       </div>
     </div>
   </div>
@@ -737,13 +737,13 @@ button:active {
     <div class="card">
       <h3 class="font-semibold mb-4">Publish Options</h3>
       <div class="space-y-3">
-        <button class="action-btn w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+        <button onclick="showToast('Job published ✅','success')" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
           📝 Publish Job
         </button>
-        <button class="action-btn w-full bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+        <button onclick="showToast('Draft Saved ✅','success')" class="w-full bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-300 transition-colors">
           💾 Save as Draft
         </button>
-        <button class="action-btn w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors">
+        <button onclick="showToast('Posted ✅','success')" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors">
           🎯 Post & Auto-Match
         </button>
       </div>
@@ -1340,18 +1340,24 @@ button:active {
     <div class="card">
       <h3 class="font-semibold mb-4">⚡ Quick Actions</h3>
       <div class="grid grid-cols-2 gap-3">
-        <button class="action-btn bg-green-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
-          💰 Process Payment
-        </button>
-        <button class="action-btn bg-blue-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-          📄 Generate Invoice
-        </button>
-        <button class="action-btn bg-purple-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
-          📊 Project Report
-        </button>
-        <button class="action-btn bg-yellow-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
-          ⭐ Leave Review
-        </button>
+        <!-- Example for different buttons -->
+
+<button onclick="showToast('Payment Processed ✅','success')" class="bg-green-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
+  💰 Process Payment
+</button>
+
+<button onclick="showToast('Invoice Generated 📝','success')" class="bg-blue-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+  📄 Generate Invoice
+</button>
+
+<button onclick="showToast('Report Ready 📊','success')" class="bg-purple-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+  📊 Project Report
+</button>
+
+<button onclick="showToast('Review Submitted ⭐','success')" class="bg-yellow-600 text-white p-3 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
+  ⭐ Leave Review
+</button>
+
       </div>
     </div>
   </div>
@@ -1737,10 +1743,10 @@ button:active {
     <div class="card">
       <h3 class="font-semibold mb-4">Security & Privacy</h3>
       <div class="grid md:grid-cols-2 gap-4">
-        <button class="action-btn bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+        <button class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
           🔑 Change Password
         </button>
-        <button class="action-btn bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
+        <button class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
           📱 Manage Devices
         </button>
         <button onclick="showToast('📊 Data downloaded','success')" class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
@@ -1776,9 +1782,9 @@ button:active {
   class="bg-blue-600 text-white p-3 rounded-lg text-sm action-btn">
   📄 Generate Invoice
 </button>
-<button class="action-btn"
-        data-success="Job published successfully"
-        data-fail="Job publish failed">
+<button data-success="Job published successfully"
+        data-fail="Job publish failed"
+        class="bg-red-100 text-white p-3 rounded-lg text-sm action-btn">
 📝 Publish Job
 </button>
       </div>
@@ -1936,6 +1942,15 @@ document.querySelectorAll('.action-btn').forEach(btn => {
 
   });
 });
+
+// JS: attach to all buttons with class 'btn-action'
+document.querySelectorAll('.btn-action').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const msg = btn.getAttribute('data-toast');
+    showToast(msg, 'success');
+  });
+});
+
 function logout() {
   showToast("👋 Logged out successfully", "info");
   setTimeout(() => {
