@@ -82,7 +82,31 @@ tailwind.config = {
   </div>
 </section>
 
+<!-- TOAST -->
+<div id="toast" class="hidden"></div>
+
 <script>
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+
+  const colors = {
+    success: "bg-green-600",
+    error: "bg-red-600",
+    warning: "bg-yellow-600",
+    info: "bg-blue-600"
+  };
+
+  toast.textContent = message;
+  toast.className =
+    `fixed top-5 right-5 z-50 px-4 py-3 rounded-lg shadow-lg text-white text-sm ${colors[type] || colors.success}`;
+
+  toast.classList.remove("hidden");
+
+  setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 3000);
+}
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 

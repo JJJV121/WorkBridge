@@ -46,23 +46,15 @@
       transform: translateY(0);
     }
 
-    .nav-btn {
-      padding: 12px 14px;
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-      border: none;
-      background: none;
-      color: inherit;
-      font: inherit;
+    .sidebar-item{
+      padding:12px 14px;
+      border-radius:10px;
+      cursor:pointer;
     }
-    .nav-btn:hover {
-      background: #eef2ff;
-    }
-    .nav-btn.active {
-      background: #e0e7ff;
-      font-weight: 600;
+    .sidebar-item:hover{ background:#eef2ff }
+    .sidebar-item.active{
+      background:#e0e7ff;
+      font-weight:600;
     }
   </style>
 </head>
@@ -114,16 +106,36 @@
 <div class="flex min-h-screen">
 
   <!-- SIDEBAR -->
-  <aside class="w-64 bg-white shadow h-screen p-4">
-    <nav class="space-y-2">
-      <button onclick="showTab('overview')" class="nav-btn">Overview</button>
-      <a href="jobs.html" class="nav-btn block">Find Jobs</a>
-      <a href="proposals.html" class="nav-btn block">Proposals</a>
-      <a href="contracts.html" class="nav-btn block">Contracts</a>
-      <a href="earnings.html" class="nav-btn block">Earnings</a>
-      <a href="messages.html" class="nav-btn block">Messages</a>
-      <a href="profile.html" class="nav-btn block">Profile</a>
-    </nav>
+  <aside class="w-64 bg-white shadow p-4 space-y-4">
+    <!-- Quick Stats -->
+    <div class="bg-indigo-50 p-4 rounded-lg">
+      <h3 class="font-semibold text-indigo-800 mb-2">Today's Summary</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between">
+          <span>New Invites</span>
+          <span class="font-medium">4</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Active Contracts</span>
+          <span class="font-medium">3</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Pending Proposals</span>
+          <span class="font-medium">7</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="space-y-1">
+      <div class="sidebar-item active" onclick="showTab('overview', this)">📊 Overview</div>
+      <div class="sidebar-item" onclick="window.location.href='jobs.html'">🔍 Find Jobs</div>
+      <div class="sidebar-item" onclick="window.location.href='proposals.html'">📝 Proposals</div>
+      <div class="sidebar-item" onclick="window.location.href='contracts.html'">📄 Contracts</div>
+      <div class="sidebar-item" onclick="window.location.href='earnings.html'">💰 Earnings</div>
+      <div class="sidebar-item" onclick="window.location.href='messages.html'">💬 Messages</div>
+      <div class="sidebar-item" onclick="window.location.href='profile.html'">👤 Profile</div>
+    </div>
   </aside>
 
   <!-- MAIN CONTENT -->

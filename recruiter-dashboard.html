@@ -1965,5 +1965,21 @@ function deleteAccount(){
 
 </script>
 
+<script src="js/recruiter-messages.js"></script>
+
+<script>
+// Initialize messages when the messages section is shown
+document.addEventListener('DOMContentLoaded', function() {
+  // Override the show function to initialize messages
+  const originalShow = window.show;
+  window.show = function(sectionId, element) {
+    originalShow(sectionId, element);
+    if (sectionId === 'messages') {
+      initRecruiterMessages();
+    }
+  };
+});
+</script>
+
 </body>
 </html>

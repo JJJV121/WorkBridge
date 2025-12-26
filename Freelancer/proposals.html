@@ -34,35 +34,101 @@
       }
     }
   </script>
+
+  <style>
+    button {
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+
+    .nav-btn {
+      padding: 12px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: none;
+      color: inherit;
+      font: inherit;
+    }
+    .nav-btn:hover {
+      background: #eef2ff;
+    }
+    .nav-btn.active {
+      background: #e0e7ff;
+      font-weight: 600;
+    }
+  </style>
 </head>
 
 <body class="bg-bgsoft text-ink font-sans">
 
 <!-- HEADER -->
-<header class="sticky top-0 bg-white/90 backdrop-blur border-b z-50">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-    
-    <!-- Logo & Site Name -->
-    <div class="flex items-center gap-2">
-      <div class="w-9 h-9 bg-accent text-white rounded-lg flex items-center justify-center font-bold shadow-[0_6px_20px_rgba(99,102,241,0.45)]">
-        W
-      </div>
-      <span class="font-semibold text-lg text-ink">WorkBridge</span>
+<header class="bg-white shadow h-16 px-6 flex justify-between items-center sticky top-0 z-50">
+  <div class="flex items-center gap-2">
+    <div class="w-9 h-9 bg-indigo-600 text-white flex items-center justify-center rounded-lg font-bold">W</div>
+    <b class="text-indigo-600 text-lg">WorkBridge Freelancer</b>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <!-- Notifications -->
+    <div class="relative">
+      <button class="relative p-2 text-gray-600 hover:text-gray-900">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.558 3a2 2 0 00-1.94 1.515L2 7v10a2 2 0 002 2h1a2 2 0 002-2V7a2 2 0 00-2-2H4.558z"></path>
+        </svg>
+        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+      </button>
     </div>
 
-    <!-- Dashboard Link -->
-    <a href="index.html"
-       class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg shadow hover:bg-indigo-700 transition font-semibold">
-      <i class="fas fa-home"></i> Dashboard
-    </a>
+    <!-- Search -->
+    <div class="relative">
+      <input type="text" placeholder="Search jobs..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+      <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
 
+    <img src="https://picsum.photos/36" class="rounded-full">
+    <div class="text-right">
+      <div class="text-sm font-medium">John Doe</div>
+      <div class="text-xs text-gray-500">Freelancer</div>
+    </div>
+
+    <!-- Logout Button -->
+    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+      </svg>
+      <span>Logout</span>
+    </button>
   </div>
 </header>
-</head>
-<body class="bg-bgsoft text-ink font-sans">
 
+<div class="flex min-h-screen">
 
-<main class="flex-1 p-6 space-y-6 max-w-7xl mx-auto">
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-white shadow h-screen p-4">
+    <nav class="space-y-2">
+      <a href="index.html" class="nav-btn block">Overview</a>
+      <a href="jobs.html" class="nav-btn block">Find Jobs</a>
+      <a href="proposals.html" class="nav-btn active block">Proposals</a>
+      <a href="contracts.html" class="nav-btn block">Contracts</a>
+      <a href="earnings.html" class="nav-btn block">Earnings</a>
+      <a href="messages.html" class="nav-btn block">Messages</a>
+      <a href="profile.html" class="nav-btn block">Profile</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 p-6 space-y-6">
   <h1 class="text-3xl font-bold text-indigo-600 mb-2">My Proposals</h1>
   <p class="text-slate-600 mb-6">Track your job applications and see their current status.</p>
   <div id="proposalList" class="space-y-4"></div>
