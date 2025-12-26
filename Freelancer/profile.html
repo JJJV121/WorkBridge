@@ -3,102 +3,240 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>WorkBridge — Contracts</title>
+  <title>WorkBridge — Profile</title>
 
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="css/styles.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-          colors: {
-            ink: '#0f172a',
-            muted: '#475569',
-            bgsoft: '#f8fafc',
-            accent: '#6366f1'
-          }
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: { accent: '#6366f1' }
         }
       }
     }
   </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 </head>
-
-
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
 
 <!-- Header -->
-<!-- Header with Dashboard Link -->
-<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-  
-  <!-- Logo & Site Name on the left -->
-  <div class="flex items-center gap-2">
-    <div
-      class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold
-             shadow-[0_6px_20px_rgba(99,102,241,0.45)]">
-      W
+<div class="w-full bg-white shadow">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold shadow-[0_6px_20px_rgba(99,102,241,0.45)]">W</div>
+      <span class="font-semibold text-lg text-gray-900">WorkBridge</span>
     </div>
-    <span class="font-semibold text-lg text-gray-900">WorkBridge</span>
+    <a href="index.html" class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg shadow hover:bg-indigo-700 transition font-semibold">
+      <i class="fas fa-home"></i> Dashboard
+    </a>
   </div>
-
-  <!-- Dashboard link on the right -->
-  <a href="index.html" 
-     class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg
-            shadow hover:bg-indigo-700 transition font-semibold">
-    <i class="fas fa-home"></i> Dashboard
-  </a>
 </div>
 
+<!-- Main Content -->
+<main class="flex-1 flex items-center justify-center mt-8 px-4">
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl space-y-6">
 
+    <h1 class="text-3xl font-bold text-indigo-600 text-center">My Profile</h1>
+    <p class="text-center text-slate-500">Manage your personal and professional information</p>
 
-<main class="container mt-8 space-y-6">
-
-  <h1 class="text-3xl font-bold text-indigo-600">Profile</h1>
-  <p class="text-slate-600">Manage your personal information.</p>
-
-  <div class="card p-6 space-y-5 max-w-2xl">
-
-    <div>
-      <label class="block text-sm text-slate-500 mb-1">Name</label>
-      <input class="input" value="John Doe">
+    <!-- Profile Picture -->
+    <div class="flex flex-col items-center space-y-3">
+      <div class="w-28 h-28 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shadow-md">
+        <img id="profilePicPreview" src="https://i.pravatar.cc/100" alt="Profile Picture" class="w-full h-full object-cover">
+      </div>
+      <label class="cursor-pointer px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+        Upload Profile Picture
+        <input type="file" id="profilePicUpload" class="hidden" accept="image/*">
+      </label>
     </div>
 
-    <div>
-      <label class="block text-sm text-slate-500 mb-1">Email</label>
-      <input class="input" value="john.doe@email.com">
+    <!-- Profile Form -->
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">Name</label>
+        <input class="input w-full px-3 py-2 border rounded-lg" id="nameInput">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">Email</label>
+        <input class="input w-full px-3 py-2 border rounded-lg" id="emailInput">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">Role</label>
+        <input class="input w-full px-3 py-2 border rounded-lg" id="roleInput">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">Skills</label>
+        <input class="input w-full px-3 py-2 border rounded-lg" id="skillsInput" placeholder="React, Tailwind, JavaScript">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">Years of Experience</label>
+        <input type="number" min="0" class="input w-full px-3 py-2 border rounded-lg" id="experienceInput" placeholder="3">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">GitHub Profile</label>
+        <input type="url" placeholder="https://github.com/sample" class="input w-full px-3 py-2 border rounded-lg" id="githubInput">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">LinkedIn Profile</label>
+        <input type="url" placeholder="https://linkedin.com/in/sample" class="input w-full px-3 py-2 border rounded-lg" id="linkedinInput">
+      </div>
+
+      <div>
+        <label class="block text-sm text-slate-500 mb-1">Location</label>
+        <input type="text" placeholder="City, Country" class="input w-full px-3 py-2 border rounded-lg" id="locationInput">
+      </div>
+
+      <!-- Profile Strength -->
+      <div class="pt-2">
+        <div class="flex justify-between mb-1">
+          <span class="text-sm text-slate-500">Profile Strength</span>
+          <b id="profileStrength">0%</b>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div id="strengthBar" class="bg-indigo-600 h-3 rounded-full w-0"></div>
+        </div>
+      </div>
+
+      <!-- Resume -->
+      <div class="pt-4">
+        <h3 class="font-semibold text-slate-700 mb-2">Resume</h3>
+        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg shadow-sm">
+          <div>
+            <p id="resumeName" class="text-slate-600">sample_resume.pdf</p>
+            <p id="resumeDate" class="text-xs text-gray-400">Last updated: Today</p>
+          </div>
+          <div class="flex gap-2">
+            <button id="viewResume" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm">View</button>
+            <label class="px-3 py-1 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm cursor-pointer">
+              Edit
+              <input type="file" id="resumeUpload" class="hidden" accept=".pdf,.doc,.docx">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="text-center pt-4">
+        <button class="btn-primary px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition" id="saveBtn">
+          Save Changes
+        </button>
+      </div>
     </div>
-
-    <div>
-      <label class="block text-sm text-slate-500 mb-1">Role</label>
-      <input class="input" value="Frontend Developer">
-    </div>
-
-    <div>
-      <label class="block text-sm text-slate-500 mb-1">Skills</label>
-      <input class="input" value="React, Tailwind, JavaScript">
-    </div>
-
-    <div class="flex justify-between items-center pt-2">
-      <span class="text-sm text-slate-500 text-indigo-600">Profile Strength</span>
-      <b>82%</b>
-    </div>
-
-    <button class="btn-primary px-4 py-2 rounded w-fit">
-      Save Changes
-    </button>
-
   </div>
-
 </main>
 
-<script src="js/profile.js"></script>
+<script>
+  // Sample user data
+  let user = {
+    name: "John Doe",
+    email: "john.doe@email.com",
+    role: "Frontend Developer",
+    skills: ["React", "Tailwind", "JavaScript"],
+    experience: 3,
+    github: "",
+    linkedin: "",
+    location: "",
+    profilePic: "https://i.pravatar.cc/100",
+    resume: "sample_resume.pdf",
+    resumeDate: "Today"
+  };
+
+  const nameInput = document.getElementById("nameInput");
+  const emailInput = document.getElementById("emailInput");
+  const roleInput = document.getElementById("roleInput");
+  const skillsInput = document.getElementById("skillsInput");
+  const experienceInput = document.getElementById("experienceInput");
+  const githubInput = document.getElementById("githubInput");
+  const linkedinInput = document.getElementById("linkedinInput");
+  const locationInput = document.getElementById("locationInput");
+  const profilePicPreview = document.getElementById("profilePicPreview");
+  const resumeName = document.getElementById("resumeName");
+  const resumeDate = document.getElementById("resumeDate");
+  const strengthBar = document.getElementById("strengthBar");
+  const profileStrength = document.getElementById("profileStrength");
+
+  // Pre-fill form
+  nameInput.value = user.name;
+  emailInput.value = user.email;
+  roleInput.value = user.role;
+  skillsInput.value = user.skills.join(", ");
+  experienceInput.value = user.experience;
+  githubInput.value = user.github;
+  linkedinInput.value = user.linkedin;
+  locationInput.value = user.location;
+  profilePicPreview.src = user.profilePic;
+  resumeName.textContent = user.resume;
+  resumeDate.textContent = "Last updated: " + user.resumeDate;
+
+  function calculateProfileStrength() {
+    let filled = 0;
+    if(nameInput.value.trim()) filled++;
+    if(emailInput.value.trim()) filled++;
+    if(roleInput.value.trim()) filled++;
+    if(skillsInput.value.trim()) filled++;
+    if(experienceInput.value.trim()) filled++;
+    if(githubInput.value.trim()) filled++;
+    if(linkedinInput.value.trim()) filled++;
+    if(locationInput.value.trim()) filled++;
+    if(user.profilePic) filled++;
+    if(user.resume) filled++;
+    let strength = Math.min(100, Math.round((filled/10)*100));
+    profileStrength.textContent = strength + "%";
+    strengthBar.style.width = strength + "%";
+  }
+
+  calculateProfileStrength();
+
+  [nameInput,emailInput,roleInput,skillsInput,experienceInput,githubInput,linkedinInput,locationInput].forEach(input=>{
+    input.addEventListener("input", calculateProfileStrength);
+  });
+
+  document.getElementById("profilePicUpload").addEventListener("change", e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{ profilePicPreview.src = reader.result; user.profilePic = reader.result; calculateProfileStrength(); };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("resumeUpload").addEventListener("change", e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    user.resume = file.name;
+    user.resumeDate = new Date().toLocaleDateString();
+    resumeName.textContent = user.resume;
+    resumeDate.textContent = "Last updated: " + user.resumeDate;
+    calculateProfileStrength();
+  });
+
+  document.getElementById("saveBtn").addEventListener("click", ()=>{
+    user.name = nameInput.value.trim();
+    user.email = emailInput.value.trim();
+    user.role = roleInput.value.trim();
+    user.skills = skillsInput.value.split(",").map(s=>s.trim());
+    user.experience = experienceInput.value.trim();
+    user.github = githubInput.value.trim();
+    user.linkedin = linkedinInput.value.trim();
+    user.location = locationInput.value.trim();
+    calculateProfileStrength();
+    alert("Profile saved successfully!");
+  });
+</script>
+
 </body>
 </html>

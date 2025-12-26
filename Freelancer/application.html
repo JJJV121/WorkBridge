@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>WorkBridge — Application Details</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'] },
+          colors: {
+            ink: '#0f172a',
+            muted: '#475569',
+            bgsoft: '#f8fafc',
+            accent: '#6366f1'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bgsoft text-ink font-sans">
+
+<!-- HEADER -->
+<header class="sticky top-0 bg-white/90 backdrop-blur border-b z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 bg-accent text-white rounded-lg flex items-center justify-center font-bold shadow-[0_6px_20px_rgba(99,102,241,0.45)]">W</div>
+      <span class="font-semibold text-lg text-ink">WorkBridge</span>
+    </div>
+    <a href="index.html" class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg shadow hover:bg-indigo-700 transition font-semibold">
+      <i class="fas fa-home"></i> Dashboard
+    </a>
+  </div>
+</header>
+
+<main class="max-w-xl mx-auto p-6 space-y-6">
+
+  <header class="flex justify-between items-center mb-4">
+    <h2 class="text-3xl font-bold text-indigo-600">Application Details</h2>
+    <a href="proposals.html" class="btn-primary text-sm">← Back to Proposals</a>
+  </header>
+
+  <div class="bg-white p-6 rounded-2xl shadow space-y-4">
+    <h3 class="text-xl font-semibold text-ink" id="jobTitle">Frontend Developer</h3>
+    <p class="text-sm text-gray-500" id="companyName">TechCorp</p>
+    <p class="text-sm text-gray-400" id="appliedDate">Applied on: 2024-01-02</p>
+
+    <hr class="my-3 border-gray-200">
+
+    <div class="space-y-3">
+      <p><b>Full Name:</b> <span id="fullName">John Doe</span></p>
+      <p><b>Email:</b> <span id="email">john.doe@example.com</span></p>
+      <p><b>Experience:</b> <span id="experience">3-5 years</span></p>
+      <p><b>Cover Letter:</b></p>
+      <p id="coverLetter" class="text-gray-700 bg-gray-50 p-3 rounded-lg">I am very interested in this role because...</p>
+      <p><b>Additional Information:</b></p>
+      <p id="optionalInfo" class="text-gray-700 bg-gray-50 p-3 rounded-lg">Tell us anything you haven’t mentioned in your Resume.</p>
+      <p><b>Status:</b> <span id="statusBadge" class="px-3 py-1 rounded-full bg-accent text-white">✔ Accepted</span></p>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // Example: dynamically load application data from URL query or JS object
+  const urlParams = new URLSearchParams(window.location.search);
+  const index = urlParams.get('id') || 0; // proposal index
+
+  const proposalsData = [
+    { role: "Frontend Developer", company: "TechCorp", status: "Viewed", appliedDate: "2024-01-02", fullName:"John Doe", email:"john.doe@example.com", experience:"3-5 years", coverLetter:"I am very interested in this role because...", optionalInfo:"Tell us anything you haven’t mentioned in your Resume." },
+    { role: "UI/UX Designer", company: "DesignHub", status: "Accepted", appliedDate: "2024-01-07", fullName:"Jane Smith", email:"jane.smith@example.com", experience:"2-4 years", coverLetter:"I specialize in user experience...", optionalInfo:"Mentioned additional projects in portfolio." },
+    { role: "React Engineer", company: "InnovateX", status: "Pending", appliedDate: "2024-01-10", fullName:"Alex Brown", email:"alex.brown@example.com", experience:"4-6 years", coverLetter:"React enthusiast with 4 years of experience...", optionalInfo:"Has certifications in React." }
+  ];
+
+  const application = proposalsData[index];
+
+  document.getElementById('jobTitle').innerText = application.role;
+  document.getElementById('companyName').innerText = application.company;
+  document.getElementById('appliedDate').innerText = `Applied on: ${application.appliedDate}`;
+  document.getElementById('fullName').innerText = application.fullName;
+  document.getElementById('email').innerText = application.email;
+  document.getElementById('experience').innerText = application.experience;
+  document.getElementById('coverLetter').innerText = application.coverLetter;
+  document.getElementById('optionalInfo').innerText = application.optionalInfo;
+  document.getElementById('statusBadge').innerText = application.status;
+</script>
+
+</body>
+</html>

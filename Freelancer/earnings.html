@@ -6,13 +6,13 @@
   <title>WorkBridge — Earnings</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- add this -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="css/styles.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  
+
   <script>
     tailwind.config = {
       theme: {
@@ -33,10 +33,7 @@
 <body class="bg-gray-50 font-sans">
 
 <!-- Header -->
-<!-- Header with Dashboard Link -->
 <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-  
-  <!-- Logo & Site Name on the left -->
   <div class="flex items-center gap-2">
     <div
       class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold
@@ -46,7 +43,6 @@
     <span class="font-semibold text-lg text-gray-900">WorkBridge</span>
   </div>
 
-  <!-- Dashboard link on the right -->
   <a href="index.html" 
      class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg
             shadow hover:bg-indigo-700 transition font-semibold">
@@ -54,8 +50,7 @@
   </a>
 </div>
 
-
-<main class="container mt-8 space-y-6 max-w-7xl mx-auto">
+<main class="container mt-8 space-y-6 max-w-7xl mx-auto min-h-[calc(100vh-96px)] pb-16">
   <h1 class="text-3xl font-bold text-indigo-600">Earnings</h1>
   <p class="text-slate-600">Track your income and withdrawals.</p>
 
@@ -67,7 +62,7 @@
     </div>
 
     <div class="card p-5">
-      <p class="text-sm text-slate-500">In Escrow</p>
+      <p class="text-sm text-slate-500">Pending</p>
       <h2 class="text-2xl font-bold text-indigo-600">$1,200</h2>
     </div>
 
@@ -79,44 +74,59 @@
 
   <!-- Charts Grid -->
   <div class="grid md:grid-cols-2 gap-6">
-    <!-- Monthly Earnings Bar Chart -->
-    <div class="card p-4">
-      <h3 class="font-semibold mb-2 text-indigo-600">Monthly Earnings</h3>
-      <div class="relative h-48">
-        <canvas id="earningsChart"></canvas>
-      </div>
-      <p class="text-slate-600 text-sm mt-2">
-        Bar chart showing your earnings per month.
-      </p>
-    </div>
+    <!-- Monthly Earnings Bar Chart (Centered) -->
+<div class="card p-4 flex flex-col items-center justify-center">
+  <h3 class="font-semibold mb-2 text-indigo-600 text-center">Monthly Earnings</h3>
+  <div class="relative h-48 w-96 mx-auto">
+    <canvas id="earningsChart"></canvas>
+  </div>
+  <p class="text-slate-600 text-sm mt-2 text-center">
+    Bar chart showing your earnings per month.
+  </p>
+</div>
 
-    <!-- Income Breakdown Pie Chart -->
-    <div class="card p-4">
-      <h3 class="font-semibold mb-2 text-indigo-600">Income Breakdown</h3>
-      <div class="relative h-48">
+
+
+    <!-- Income Breakdown Pie Chart (Centered) -->
+    <div class="card p-4 flex flex-col items-center justify-center">
+      <h3 class="font-semibold mb-2 text-indigo-600 text-center">Income Breakdown</h3>
+      <div class="relative h-48 w-48">
         <canvas id="incomeBreakdownChart"></canvas>
       </div>
-      <p class="text-slate-600 text-sm mt-2">
-        Pie chart showing available, escrow, and withdrawn funds.
+      <p class="text-slate-600 text-sm mt-2 text-center">
+        Pie chart showing available, pending, and withdrawn funds.
       </p>
     </div>
 
-    <!-- Earnings Trend Line Chart -->
-    <div class="card p-4 md:col-span-2">
-      <h3 class="font-semibold mb-2 text-indigo-600">Cumulative Earnings Trend</h3>
-      <div class="relative h-48">
-        <canvas id="earningsTrendChart"></canvas>
+    <!-- Cumulative Earnings Line Chart -->
+    <!-- Cumulative Earnings Line Chart (Centered) -->
+<div class="card p-4 flex flex-col items-center justify-center">
+  <h3 class="font-semibold mb-2 text-indigo-600 text-center">Cumulative Earnings Trend</h3>
+  <div class="relative h-48 w-96 mx-auto">
+    <canvas id="earningsTrendChart"></canvas>
+  </div>
+  <p class="text-slate-600 text-sm mt-2 text-center">
+    Line chart representing cumulative earnings over the months.
+  </p>
+</div>
+    <!-- Monthly Earnings Distribution Doughnut Chart (Centered) -->
+    <div class="card p-4 flex flex-col items-center justify-center">
+      <h3 class="font-semibold mb-2 text-indigo-600 text-center">Monthly Earnings Distribution</h3>
+      <div class="relative h-48 w-48">
+        <canvas id="monthlyDistributionChart"></canvas>
       </div>
-      <p class="text-slate-600 text-sm mt-2">
-        Line chart representing cumulative earnings over the months.
+      <p class="text-slate-600 text-sm mt-2 text-center">
+        Doughnut chart showing the percentage distribution of your monthly earnings.
       </p>
     </div>
   </div>
 
-  <button class="btn-primary mt-6 px-4 py-2 rounded">
-    Withdraw Funds
-  </button>
-
+  <!-- Withdraw Funds Button -->
+  <div class="mt-6">
+    <button class="btn-primary px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+      Withdraw Funds
+    </button>
+  </div>
 </main>
 
 <script src="js/earnings.js"></script>
