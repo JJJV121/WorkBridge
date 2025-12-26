@@ -1,79 +1,136 @@
-// jobs.js
-
-// Mock jobs dataset
 const jobsData = [
-  { id: 1, title: "Frontend Developer", company: "LinkedIn", role: "Frontend", status: "Interviewed", applied_date: "2024-01-02" },
-  { id: 2, title: "Backend Developer", company: "Referral", role: "Backend", status: "Hired", applied_date: "2024-01-05", hired_date: "2024-01-20", recruiter: "Rahul" },
-  { id: 3, title: "UI/UX Designer", company: "Website", role: "UI/UX", status: "Rejected", applied_date: "2024-01-07" },
-  { id: 4, title: "Full Stack Developer", company: "LinkedIn", role: "Full Stack", status: "Hired", applied_date: "2024-01-10", hired_date: "2024-01-25", recruiter: "Anita" },
-  { id: 5, title: "Data Analyst", company: "DataWorks", role: "Analytics", status: "Interviewed", applied_date: "2024-02-01" },
-  { id: 6, title: "Machine Learning Engineer", company: "AI Labs", role: "ML/AI", status: "Rejected", applied_date: "2024-02-03" },
-  { id: 7, title: "DevOps Engineer", company: "CloudTech", role: "DevOps", status: "Hired", applied_date: "2024-02-05", hired_date: "2024-02-20", recruiter: "Sonia" },
-  { id: 8, title: "Mobile App Developer", company: "AppWorks", role: "Mobile", status: "Interviewed", applied_date: "2024-02-07" },
-  { id: 9, title: "Product Manager", company: "StartupHub", role: "Management", status: "Rejected", applied_date: "2024-02-10" },
-  { id: 10, title: "Cloud Architect", company: "Tech Solutions", role: "Cloud", status: "Hired", applied_date: "2024-02-12", hired_date: "2024-02-28", recruiter: "Vikram" },
-  { id: 11, title: "QA Engineer", company: "QualitySoft", role: "QA", status: "Interviewed", applied_date: "2024-02-15" },
-  { id: 12, title: "React Developer", company: "Webify", role: "Frontend", status: "Hired", applied_date: "2024-02-18", hired_date: "2024-03-05", recruiter: "Meera" }
+  {
+    id: 1,
+    title: "Frontend Developer",
+    company: "TechNova",
+    location: "Remote",
+    experience: "1–3 yrs",
+    skills: "React, Tailwind",
+    category: "Web Development",
+    type: "Full-time"
+  },
+  {
+    id: 2,
+    title: "Backend Developer",
+    company: "CloudCore",
+    location: "Bengaluru (Hybrid)",
+    experience: "2–4 yrs",
+    skills: "Node.js, PostgreSQL",
+    category: "Web Development",
+    type: "Full-time"
+  },
+  {
+    id: 3,
+    title: "UI / UX Designer",
+    company: "Designify",
+    location: "Remote",
+    experience: "0–2 yrs",
+    skills: "Figma, Wireframing",
+    category: "UI / UX",
+    type: "Contract"
+  },
+  {
+    id: 4,
+    title: "Data Analyst",
+    company: "DataWorks",
+    location: "Remote",
+    experience: "1–3 yrs",
+    skills: "Python, SQL",
+    category: "Data Science",
+    type: "Full-time"
+  },
+  {
+    id: 5,
+    title: "ML Engineer",
+    company: "AI Labs",
+    location: "Remote",
+    experience: "2–4 yrs",
+    skills: "Model Training",
+    category: "Machine Learning",
+    type: "Full-time"
+  },
+  {
+    id: 6,
+    title: "DevOps Engineer",
+    company: "InfraStack",
+    location: "Hyderabad",
+    experience: "3–5 yrs",
+    skills: "AWS, Docker",
+    category: "DevOps",
+    type: "Full-time"
+  },
+  {
+    id: 7,
+    title: "Mobile App Developer",
+    company: "AppWorks",
+    location: "Remote",
+    experience: "1–3 yrs",
+    skills: "Flutter / React Native",
+    category: "Mobile Development",
+    type: "Contract"
+  }
 ];
 
-// DOM Elements
 const jobList = document.getElementById("jobList");
-const statusFilter = document.getElementById("statusFilter");
 const searchInput = document.getElementById("searchInput");
-const searchBtn = document.getElementById("searchBtn");
+const categoryFilter = document.getElementById("categoryFilter");
 
-// Function to render jobs
 function renderJobs(jobs) {
-  jobList.innerHTML = ""; // clear previous
-
-  if (jobs.length === 0) {
-    jobList.innerHTML = `<p class="text-gray-500 col-span-full">No jobs found</p>`;
-    return;
-  }
+  jobList.innerHTML = "";
 
   jobs.forEach(job => {
-    const jobCard = document.createElement("div");
-    jobCard.className = "bg-white p-5 rounded-xl shadow hover:shadow-lg transition duration-200 flex flex-col gap-2 border border-gray-200";
+    const card = document.createElement("div");
+    card.className = "card job-card";
 
-    // Color-coded status badges
-    let statusClass = "";
-    if (job.status === "Hired") statusClass = "bg-green-100 text-green-700";
-    else if (job.status === "Interviewed") statusClass = "bg-yellow-100 text-yellow-700";
-    else if (job.status === "Rejected") statusClass = "bg-red-100 text-red-700";
+    card.innerHTML = `
+      <h3>${job.title}</h3>
 
-    jobCard.innerHTML = `
-      <h3 class="text-xl font-semibold text-gray-900">${job.title}</h3>
-      <p class="text-gray-600 text-sm">${job.role} • ${job.company}</p>
-      <p class="text-gray-500 text-xs">Applied: ${job.applied_date}</p>
-      ${job.hired_date ? `<p class="text-green-600 font-medium text-sm">Hired on: ${job.hired_date}</p>` : ""}
-      <span class="inline-block mt-2 px-2 py-1 text-sm rounded-full ${statusClass}">${job.status}</span>
-      <button class="mt-3 btn-primary w-full">Apply Now</button>
+      <p class="font-medium text-sm mt-1">
+        ${job.company} • ${job.location}
+      </p>
+
+      <p class="text-sm text-muted mt-1">
+        Experience: ${job.experience}
+      </p>
+
+      <p class="text-sm text-muted mt-1">
+        ${job.skills}
+      </p>
+
+      <div class="flex gap-2 mt-3">
+        <span class="badge">${job.type}</span>
+        <span class="badge">${job.category}</span>
+      </div>
+
+      <a href="apply.html?job=${job.id}" class="btn-primary mt-4 text-center">
+        Apply Now
+      </a>
     `;
 
-    jobList.appendChild(jobCard);
+    jobList.appendChild(card);
   });
 }
 
-// Filter jobs based on status and search
 function filterJobs() {
-  const selectedStatus = statusFilter.value; // All, Hired, Interviewed, Rejected
-  const searchText = searchInput.value.toLowerCase();
+  const search = searchInput.value.toLowerCase();
+  const category = categoryFilter.value;
 
-  const filteredJobs = jobsData.filter(job => {
-    const matchesStatus = selectedStatus === "" || job.status === selectedStatus;
-    const matchesSearch = job.title.toLowerCase().includes(searchText) || job.company.toLowerCase().includes(searchText) || job.role.toLowerCase().includes(searchText);
-    return matchesStatus && matchesSearch;
+  const filtered = jobsData.filter(job => {
+    const matchesSearch =
+      job.title.toLowerCase().includes(search) ||
+      job.company.toLowerCase().includes(search) ||
+      job.skills.toLowerCase().includes(search);
+
+    const matchesCategory =
+      category === "All Categories" || job.category === category;
+
+    return matchesSearch && matchesCategory;
   });
 
-  renderJobs(filteredJobs);
+  renderJobs(filtered);
 }
 
-// Initial render
-renderJobs(jobsData);
+searchInput.addEventListener("keyup", filterJobs);
+categoryFilter.addEventListener("change", filterJobs);
 
-// Event listeners
-statusFilter.addEventListener("change", filterJobs);
-searchBtn.addEventListener("click", filterJobs);
-searchInput.addEventListener("keyup", function(e) {
-  if (e.key === "Enter") filterJobs();
-});
+renderJobs(jobsData);

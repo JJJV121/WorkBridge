@@ -1,71 +1,105 @@
-// Load user from localStorage if available
+// Sample user data
 let user = JSON.parse(localStorage.getItem("user")) || {
   name: "John Doe",
   email: "john.doe@email.com",
   role: "Frontend Developer",
   skills: ["React", "Tailwind", "JavaScript"],
-  profileStrength: 82
+  experience: 3,
+  github: "https://github.com/sample",
+  linkedin: "https://linkedin.com/in/sample",
+  location: "City, Country",
+  profilePic: "https://i.pravatar.cc/100",
+  resume: "sample_resume.pdf",
+  resumeDate: "Today"
 };
 
-// Pre-fill input fields
-const nameInput = document.querySelector("input[value='John Doe']");
-const emailInput = document.querySelector("input[value='john.doe@email.com']");
-const roleInput = document.querySelector("input[value='Frontend Developer']");
-const skillsInput = document.querySelector("input[value='React, Tailwind, JavaScript']");
+// Inputs
+const nameInput = document.getElementById("nameInput");
+const emailInput = document.getElementById("emailInput");
+const roleInput = document.getElementById("roleInput");
+const skillsInput = document.getElementById("skillsInput");
+const experienceInput = document.getElementById("experienceInput");
+const githubInput = document.getElementById("githubInput");
+const linkedinInput = document.getElementById("linkedinInput");
+const locationInput = document.getElementById("locationInput");
+const profilePicPreview = document.getElementById("profilePicPreview");
+const resumeName = document.getElementById("resumeName");
+const resumeDate = document.getElementById("resumeDate");
 
+// Pre-fill form
 nameInput.value = user.name;
 emailInput.value = user.email;
 roleInput.value = user.role;
 skillsInput.value = user.skills.join(", ");
+experienceInput.value = user.experience;
+githubInput.value = user.github;
+linkedinInput.value = user.linkedin;
+locationInput.value = user.location;
+profilePicPreview.src = user.profilePic;
+resumeName.textContent = user.resume;
+resumeDate.textContent = "Last updated: " + user.resumeDate;
 
-// Function to show custom toast
-function showToast(message) {
-  const toast = document.createElement("div");
-  toast.className = `
-    fixed bottom-5 right-5 bg-indigo-600 text-white px-5 py-3 rounded-lg shadow-lg
-    flex items-center space-x-3 animate-slideIn
-    z-50
-  `;
-  toast.innerHTML = `
-    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
-    <span>${message}</span>
-  `;
+// Profile picture upload
+document.getElementById("profilePicUpload").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    profilePicPreview.src = reader.result;
+    user.profilePic = reader.result;
+    calculateProfileStrength();
+  };
+  reader.readAsDataURL(file);
+});
 
-  document.body.appendChild(toast);
+// Resume upload
+document.getElementById("resumeUpload").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  user.resume = file.name;
+  user.resumeDate = new Date().toLocaleDateString();
+  resumeName.textContent = user.resume;
+  resumeDate.textContent = "Last updated: " + user.resumeDate;
+  calculateProfileStrength();
+});
 
-  // Remove toast after 3 seconds
-  setTimeout(() => {
-    toast.classList.add("opacity-0", "transition", "duration-500");
-    setTimeout(() => toast.remove(), 500);
-  }, 3000);
+// Calculate profile strength
+function calculateProfileStrength() {
+  let filled = 0;
+  if (nameInput.value.trim()) filled++;
+  if (emailInput.value.trim()) filled++;
+  if (roleInput.value.trim()) filled++;
+  if (skillsInput.value.trim()) filled++;
+  if (experienceInput.value.trim()) filled++;
+  if (githubInput.value.trim()) filled++;
+  if (linkedinInput.value.trim()) filled++;
+  if (locationInput.value.trim()) filled++;
+  if (user.profilePic) filled++;
+  if (user.resume) filled++;
+  let strength = Math.min(100, Math.round((filled / 10) * 100));
+  document.getElementById("profileStrength").textContent = strength + "%";
+  document.getElementById("strengthBar").style.width = strength + "%";
 }
 
-// Add Tailwind animation via style
-const style = document.createElement("style");
-style.textContent = `
-  @keyframes slideIn {
-    0% { transform: translateY(50px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-  }
-  .animate-slideIn { animation: slideIn 0.4s ease-out; }
-`;
-document.head.appendChild(style);
+// Run on load
+calculateProfileStrength();
 
-// Save button functionality
-document.querySelector(".btn-primary").addEventListener("click", () => {
+// Update dynamically
+[nameInput,emailInput,roleInput,skillsInput,experienceInput,githubInput,linkedinInput,locationInput].forEach(input=>{
+  input.addEventListener("input", calculateProfileStrength);
+});
+
+// Save button
+document.getElementById("saveBtn").addEventListener("click", () => {
   user.name = nameInput.value.trim();
   user.email = emailInput.value.trim();
   user.role = roleInput.value.trim();
   user.skills = skillsInput.value.split(",").map(s => s.trim());
-
-  let filled = [user.name, user.email, user.role, user.skills.length > 0].filter(Boolean).length;
-  user.profileStrength = Math.min(100, Math.round((filled / 4) * 100));
-
+  user.experience = experienceInput.value.trim();
+  user.github = githubInput.value.trim();
+  user.linkedin = linkedinInput.value.trim();
+  user.location = locationInput.value.trim();
   localStorage.setItem("user", JSON.stringify(user));
-  document.querySelector(".card b").textContent = user.profileStrength + "%";
-
-  // Show custom toast
-  showToast("Profile saved successfully!");
+  calculateProfileStrength();
+  alert("Profile saved successfully!");
 });

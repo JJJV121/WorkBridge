@@ -4,11 +4,20 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>WorkBridge — Find Jobs</title>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Global Styles -->
+   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
   <script>
     tailwind.config = {
       theme: {
@@ -26,51 +35,80 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 </head>
-<body class="bg-gray-50 font-sans">
 
-<!-- Header with Dashboard Link -->
-<!-- Header with Dashboard Link -->
-<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-  
-  <!-- Logo & Site Name on the left -->
-  <div class="flex items-center gap-2">
-    <div
-      class="w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center font-bold
-             shadow-[0_6px_20px_rgba(99,102,241,0.45)]">
-      W
+<body class="bg-bgsoft text-ink font-sans">
+
+<!-- HEADER -->
+<header class="sticky top-0 bg-white/90 backdrop-blur border-b z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    
+    <!-- Logo & Site Name -->
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 bg-accent text-white rounded-lg flex items-center justify-center font-bold shadow-[0_6px_20px_rgba(99,102,241,0.45)]">
+        W
+      </div>
+      <span class="font-semibold text-lg text-ink">WorkBridge</span>
     </div>
-    <span class="font-semibold text-lg text-gray-900">WorkBridge</span>
-  </div>
 
-  <!-- Dashboard link on the right -->
-  <a href="index.html" 
-     class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg
-            shadow hover:bg-indigo-700 transition font-semibold">
-    <i class="fas fa-home"></i> Dashboard
-  </a>
+    <!-- Dashboard Link -->
+    <a href="index.html"
+       class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg shadow hover:bg-indigo-700 transition font-semibold">
+      <i class="fas fa-home"></i> Dashboard
+    </a>
+
+  </div>
+</header>
+<div class="flex min-h-screen">
+
+  <!-- SIDEBAR -->
+  <!-- <aside class="w-64 bg-white shadow h-screen p-4">
+    <nav class="space-y-2">
+      <a href="index.html" class="nav-btn block">Overview</a>
+      <a href="jobs.html" class="nav-btn active block">Find Jobs</a>
+      <a href="proposals.html" class="nav-btn block">Proposals</a>
+      <a href="contracts.html" class="nav-btn block">Contracts</a>
+      <a href="earnings.html" class="nav-btn block">Earnings</a>
+      <a href="messages.html" class="nav-btn block">Messages</a>
+      <a href="profile.html" class="nav-btn block">Profile</a>
+    </nav>
+  </aside> -->
+
+  <!-- MAIN -->
+  <main class="flex-1 p-6 space-y-6">
+
+    <!-- PAGE HEADING -->
+    <div>
+      <h1 class="text-3xl font-bold text-indigo-600 mb-2">Find Jobs</h1>
+      <p class="text-slate-600 mb-6">
+        Explore curated opportunities that match your skills.
+      </p>
+    </div>
+
+    <!-- SEARCH + FILTER -->
+    <div class="bg-white p-4 rounded-2xl shadow flex flex-col md:flex-row gap-4">
+      <input
+        id="searchInput"
+        class="input"
+        placeholder="Search by role, company, skills..."
+      />
+
+      <select id="categoryFilter" class="input md:w-60">
+        <option>All Categories</option>
+        <option>Web Development</option>
+        <option>UI / UX</option>
+        <option>Data Science</option>
+        <option>Machine Learning</option>
+        <option>DevOps</option>
+        <option>Mobile Development</option>
+      </select>
+    </div>
+
+    <!-- JOB CARDS -->
+    <div id="jobList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  </main>
 </div>
-
-
-<main class="p-6 max-w-7xl mx-auto">
-  <h1 class="text-2xl font-bold mb-6 section-title text-indigo-600">Find Jobs</h1>
-
-  <!-- Search / Filter -->
-  <div class="flex flex-col md:flex-row gap-4 mb-6">
-    <input type="text" id="searchInput" placeholder="Search by role or company..." class="input flex-1"/>
-    <select id="statusFilter" class="input w-40">
-      <option value="">All Status</option>
-      <option>Interviewed</option>
-      <option>Hired</option>
-      <option>Rejected</option>
-    </select>
-    <button id="searchBtn" class="btn-primary w-36">Search</button>
-  </div>
-
-  <!-- Job Cards -->
-  <div id="jobList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-</main>
 
 <script src="js/jobs.js"></script>
 </body>

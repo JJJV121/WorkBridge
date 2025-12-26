@@ -2,7 +2,7 @@
 const monthlyEarnings = [1200, 900, 1500, 1800, 2100, 2450];
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
 const available = 2450;
-const inEscrow = 1200;
+const pending = 1200; // replaced 'inEscrow' with 'pending'
 const withdrawn = 6800;
 
 // ----- Monthly Earnings Bar Chart -----
@@ -17,10 +17,7 @@ new Chart(document.getElementById("earningsChart"), {
     }]
   },
   options: {
-    plugins: {
-      legend: { display: false },
-      tooltip: { mode: "index", intersect: false }
-    },
+    plugins: { legend: { display: false }, tooltip: { mode: "index", intersect: false } },
     responsive: true,
     scales: { y: { beginAtZero: true } }
   }
@@ -30,9 +27,9 @@ new Chart(document.getElementById("earningsChart"), {
 new Chart(document.getElementById("incomeBreakdownChart"), {
   type: "pie",
   data: {
-    labels: ["Available", "In Escrow", "Withdrawn"],
+    labels: ["Available", "Pending", "Withdrawn"],
     datasets: [{
-      data: [available, inEscrow, withdrawn],
+      data: [available, pending, withdrawn],
       backgroundColor: ["#6366f1", "#facc15", "#ef4444"]
     }]
   },
@@ -61,11 +58,28 @@ new Chart(document.getElementById("earningsTrendChart"), {
     }]
   },
   options: {
-    plugins: {
-      legend: { display: true },
-      tooltip: { callbacks: { label: ctx => `$${ctx.raw}` } }
-    },
+    plugins: { legend: { display: true }, tooltip: { callbacks: { label: ctx => `$${ctx.raw}` } } },
     responsive: true,
     scales: { y: { beginAtZero: true } }
+  }
+});
+
+// ----- Monthly Earnings Distribution Doughnut Chart -----
+new Chart(document.getElementById("monthlyDistributionChart"), {
+  type: "doughnut",
+  data: {
+    labels: months,
+    datasets: [{
+      data: monthlyEarnings,
+      backgroundColor: ["#6366f1", "#10b981", "#facc15", "#ef4444", "#8b5cf6", "#22d3ee"],
+      borderWidth: 2
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { position: "bottom" },
+      tooltip: { callbacks: { label: ctx => `${ctx.label}: $${ctx.raw}` } }
+    },
+    responsive: true
   }
 });
